@@ -1,0 +1,38 @@
+<footer class="border-t border-[var(--border)] pt-4 text-xs tracking-[0.08em] text-[var(--muted)]">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="flex flex-col gap-1 leading-tight">
+      {{ with .Site.Params.copyright }}
+        <p>{{ . }}</p>
+      {{ else }}
+        <p>© {{ now.Format "2006" }} {{ .Site.Title }}</p>
+      {{ end }}
+      <p>Build with Hugo and papercut</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="text-[0.68rem] uppercase tracking-[0.1em]">Theme</span>
+    <button class="theme-cycle" type="button" data-theme-cycle data-theme-current="system" aria-label="Theme: system. Click to switch.">
+      <span class="sr-only">Cycle theme</span>
+      <svg class="theme-cycle__icon" data-theme-icon="system" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3.5" y="4.5" width="17" height="11" rx="1.5" />
+        <path d="M9 19.5h6" />
+        <path d="M12 15.5v4" />
+      </svg>
+      <svg class="theme-cycle__icon" data-theme-icon="light" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2.5v3" />
+        <path d="M12 18.5v3" />
+        <path d="M2.5 12h3" />
+        <path d="M18.5 12h3" />
+        <path d="m5.2 5.2 2.2 2.2" />
+        <path d="m16.6 16.6 2.2 2.2" />
+        <path d="m18.8 5.2-2.2 2.2" />
+        <path d="m7.4 16.6-2.2 2.2" />
+      </svg>
+      <svg class="theme-cycle__icon" data-theme-icon="dark" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
+      </svg>
+    </button>
+    </div>
+  </div>
+</footer>

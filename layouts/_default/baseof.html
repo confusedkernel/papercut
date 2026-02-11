@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+  <head>
+    {{ partial "head.html" . }}
+  </head>
+  <body class="min-h-screen bg-[var(--bg)] text-[var(--fg)] antialiased">
+    <div class="mx-auto flex min-h-screen max-w-[860px] flex-col gap-8 px-4 py-6 sm:gap-10 sm:px-6 sm:py-8 lg:px-8">
+      {{ partial "header.html" . }}
+
+      <main class="flex flex-1 flex-col gap-10">
+        {{ block "main" . }}{{ end }}
+      </main>
+
+      {{ partial "footer.html" . }}
+    </div>
+  </body>
+</html>

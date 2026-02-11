@@ -1,0 +1,133 @@
+<header class="site-header sticky top-0 z-50 -mx-4 border-b border-[var(--border)] bg-[var(--bg)] opacity-100 px-4 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+  <div class="relative flex items-center justify-between gap-4">
+    <a class="text-lg font-bold tracking-[0.02em] sm:text-xl" href="{{ "/" | relURL }}">{{ .Site.Title }}</a>
+
+    <nav aria-label="Primary" class="header-nav-desktop pointer-events-none absolute left-1/2 -translate-x-1/2">
+      <ul class="pointer-events-auto flex items-center gap-5 text-sm uppercase tracking-[0.08em]">
+        {{ $current := $.RelPermalink }}
+        {{ if .Site.Menus.main }}
+          {{ range .Site.Menus.main }}
+            {{ $target := .URL | relURL }}
+            {{ $key := replaceRE "^/|/$" "" $target }}
+            {{ if and (ne $key "archives") (ne $key "categories") (ne $key "tags") }}
+              {{ $isActive := or (eq $current $target) (and (ne $target "/") (hasPrefix $current $target)) }}
+              <li>
+                <a
+                  class="transition-colors {{ if $isActive }}font-bold text-[var(--fg)]{{ else }}font-normal text-[var(--muted)] hover:font-bold hover:text-[var(--fg)]{{ end }}"
+                  href="{{ $target }}"
+                  {{ if $isActive }}aria-current="page"{{ end }}
+                >
+                  {{ .Name }}
+                </a>
+              </li>
+            {{ end }}
+          {{ end }}
+        {{ else }}
+          {{ range .Site.Sections }}
+            {{ $target := .RelPermalink }}
+            {{ $key := replaceRE "^/|/$" "" $target }}
+            {{ if and (ne $key "archives") (ne $key "categories") (ne $key "tags") }}
+              {{ $isActive := or (eq $current $target) (and (ne $target "/") (hasPrefix $current $target)) }}
+              <li>
+                <a
+                  class="transition-colors {{ if $isActive }}font-bold text-[var(--fg)]{{ else }}font-normal text-[var(--muted)] hover:font-bold hover:text-[var(--fg)]{{ end }}"
+                  href="{{ $target }}"
+                  {{ if $isActive }}aria-current="page"{{ end }}
+                >
+                  {{ .Title }}
+                </a>
+              </li>
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <form class="search-toggle header-search-desktop" role="search" method="get" action="{{ "search/" | relURL }}" data-search-toggle>
+        <label class="sr-only" for="site-search">Search</label>
+        <button
+          type="button"
+          class="search-toggle__button"
+          data-search-toggle-button
+          aria-label="Open search"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 4.5 4.5"></path>
+          </svg>
+        </button>
+        <input
+          id="site-search"
+          name="q"
+          type="search"
+          placeholder="Search"
+          class="search-toggle__input"
+          data-search-toggle-input
+        />
+      </form>
+
+      <details class="mobile-nav header-mobile-menu relative">
+        <summary class="mobile-nav__toggle list-none cursor-pointer p-0" aria-label="Open navigation menu">
+          <span class="sr-only">Menu</span>
+          <span class="mobile-nav__line mobile-nav__line--top"></span>
+          <span class="mobile-nav__line mobile-nav__line--middle"></span>
+          <span class="mobile-nav__line mobile-nav__line--bottom"></span>
+        </summary>
+        <div class="mobile-nav__panel absolute right-0 mt-2 w-56 border border-[var(--border)] bg-[var(--bg-alt)] p-3 shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
+          <form class="mb-3" role="search" method="get" action="{{ "search/" | relURL }}">
+            <label class="sr-only" for="site-search-mobile">Search</label>
+            <input
+              id="site-search-mobile"
+              name="q"
+              type="search"
+              placeholder="Search"
+              class="h-8 w-full border border-[var(--border)] bg-[var(--bg)] px-2 text-xs uppercase tracking-[0.08em] text-[var(--fg)] placeholder:text-[var(--muted)] focus:outline-none"
+            />
+          </form>
+
+          <ul class="flex flex-col gap-3 border-t border-[var(--border)] pt-3 text-sm uppercase tracking-[0.08em]">
+            {{ if .Site.Menus.main }}
+              {{ range .Site.Menus.main }}
+                {{ $current := $.RelPermalink }}
+                {{ $target := .URL | relURL }}
+                {{ $key := replaceRE "^/|/$" "" $target }}
+                {{ if and (ne $key "archives") (ne $key "categories") (ne $key "tags") }}
+                  {{ $isActive := or (eq $current $target) (and (ne $target "/") (hasPrefix $current $target)) }}
+                  <li>
+                    <a
+                      class="transition-colors {{ if $isActive }}font-bold text-[var(--fg)]{{ else }}font-normal text-[var(--muted)] hover:font-bold hover:text-[var(--fg)]{{ end }}"
+                      href="{{ $target }}"
+                      {{ if $isActive }}aria-current="page"{{ end }}
+                    >
+                      {{ .Name }}
+                    </a>
+                  </li>
+                {{ end }}
+              {{ end }}
+            {{ else }}
+              {{ range .Site.Sections }}
+                {{ $current := $.RelPermalink }}
+                {{ $target := .RelPermalink }}
+                {{ $key := replaceRE "^/|/$" "" $target }}
+                {{ if and (ne $key "archives") (ne $key "categories") (ne $key "tags") }}
+                  {{ $isActive := or (eq $current $target) (and (ne $target "/") (hasPrefix $current $target)) }}
+                  <li>
+                    <a
+                      class="transition-colors {{ if $isActive }}font-bold text-[var(--fg)]{{ else }}font-normal text-[var(--muted)] hover:font-bold hover:text-[var(--fg)]{{ end }}"
+                      href="{{ $target }}"
+                      {{ if $isActive }}aria-current="page"{{ end }}
+                    >
+                      {{ .Title }}
+                    </a>
+                  </li>
+                {{ end }}
+              {{ end }}
+            {{ end }}
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>

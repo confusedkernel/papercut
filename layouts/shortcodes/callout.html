@@ -1,0 +1,27 @@
+{{- $type := lower (.Get "type" | default "info") -}}
+{{- if not (in (slice "note" "info" "tip" "warning" "danger" "success") $type) -}}
+  {{- $type = "info" -}}
+{{- end -}}
+{{- $title := .Get "title" | default ($type | humanize | title) -}}
+{{- $icon := .Get "icon" | default "" -}}
+{{- if eq $icon "" -}}
+  {{- if or (eq $type "tip") (eq $type "success") -}}
+    {{- $icon = "check" -}}
+  {{- else if or (eq $type "warning") (eq $type "danger") -}}
+    {{- $icon = "warning" -}}
+  {{- else if eq $type "note" -}}
+    {{- $icon = "lightbulb" -}}
+  {{- else -}}
+    {{- $icon = "info" -}}
+  {{- end -}}
+{{- end -}}
+
+<div class="sc-callout sc-callout--{{ $type }}">
+  <div class="sc-callout__head">
+    {{ partial "shortcode-icon.html" (dict "name" $icon "class" "sc-callout__icon" "size" "1rem") }}
+    <span class="sc-callout__title">{{ $title }}</span>
+  </div>
+  <div class="sc-callout__content">
+    {{ .Inner | markdownify }}
+  </div>
+</div>

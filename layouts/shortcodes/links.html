@@ -1,0 +1,8 @@
+{{- $cols := .Get "cols" | default "2" -}}
+{{- $colsNum := int $cols -}}
+{{- if lt $colsNum 1 -}}{{- $colsNum = 1 -}}{{- end -}}
+{{- if gt $colsNum 4 -}}{{- $colsNum = 4 -}}{{- end -}}
+
+<div class="sc-links sc-links--{{ $colsNum }}">
+  {{ .Inner | safeHTML }}
+</div>

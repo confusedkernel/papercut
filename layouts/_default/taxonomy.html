@@ -1,0 +1,80 @@
+{{ define "main" }}
+  {{ $isTaxonomyList := eq .Kind "taxonomy" }}
+
+  <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.10)] sm:p-6">
+    <nav aria-label="Breadcrumb" class="text-sm uppercase tracking-[0.08em] text-[var(--muted)]">
+      {{ if $isTaxonomyList }}
+        <span>Taxonomies</span>
+        <span class="px-2">&gt;</span>
+        <span class="text-[var(--fg)]">{{ .Title | humanize | title }}</span>
+      {{ else }}
+        <a class="hover:underline" href="{{ printf "/%s/" .Data.Plural | relURL }}">{{ .Data.Plural | humanize | title }}</a>
+        <span class="px-2">&gt;</span>
+        <span class="text-[var(--fg)]">{{ .Title | humanize | title }}</span>
+      {{ end }}
+    </nav>
+    <h1 class="mt-2 text-2xl sm:text-3xl">{{ .Title | humanize | title }}</h1>
+  </section>
+
+  {{ if $isTaxonomyList }}
+    <section class="flex flex-col gap-4">
+      <ul class="flex flex-wrap gap-2">
+        {{ range .Data.Terms.Alphabetical }}
+          <li>
+            <a
+              class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
+              href="{{ .Page.RelPermalink }}"
+            >
+              {{ .Page.Title }}<sup class="ml-1 text-[0.6rem]">{{ .Count }}</sup>
+            </a>
+          </li>
+        {{ end }}
+      </ul>
+    </section>
+  {{ else }}
+    <section class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4">
+        {{ range .Pages }}
+          <article
+            class="interactive-card grid gap-3 border border-[var(--border)] bg-[var(--bg-alt)] p-4 sm:grid-cols-[120px_1fr] sm:p-5 md:grid-cols-[140px_1fr]"
+            data-card-href="{{ .RelPermalink }}"
+          >
+            <div class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">
+              <time datetime="{{ .Date.Format "2006-01-02" }}">
+                {{ .Date.Format "Jan 2, 2006" }}
+              </time>
+            </div>
+            <div class="flex flex-col gap-2">
+              <h2 class="text-lg">
+                <a class="hover:underline" href="{{ .RelPermalink }}">{{ .Title }}</a>
+              </h2>
+              {{ if or .Params.categories .Params.tags }}
+                <div class="flex flex-wrap gap-2 text-[0.65rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+                  {{ with .Params.categories }}
+                    {{ range . }}
+                      <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "categories/" | relURL }}{{ . | urlize }}/">
+                        {{ . }}
+                      </a>
+                    {{ end }}
+                  {{ end }}
+                  {{ with .Params.tags }}
+                    {{ range . }}
+                      <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "tags/" | relURL }}{{ . | urlize }}/">
+                        #{{ . }}
+                      </a>
+                    {{ end }}
+                  {{ end }}
+                </div>
+              {{ end }}
+              {{ with .Params.description }}
+                <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</p>
+              {{ else }}
+                <p class="text-sm leading-relaxed text-[var(--muted)]">{{ .Summary }}</p>
+              {{ end }}
+            </div>
+          </article>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

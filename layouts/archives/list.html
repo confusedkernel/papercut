@@ -1,0 +1,50 @@
+{{ define "main" }}
+  <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.10)] sm:p-6">
+    <div class="flex flex-col gap-3">
+      <p class="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Archives</p>
+      <h1 class="text-2xl sm:text-3xl">{{ .Title }}</h1>
+      {{ with .Content }}
+        <div class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</div>
+      {{ end }}
+    </div>
+  </section>
+
+  {{ $pages := where .Site.RegularPages "Section" "posts" }}
+  {{ if not $pages }}
+    {{ $pages = .Site.RegularPages }}
+  {{ end }}
+  {{ $pages = $pages.ByDate.Reverse }}
+
+  {{ if gt (len $pages) 0 }}
+    <section class="timeline">
+      {{ range $pages.GroupByDate "2006" }}
+        <div class="flex flex-col gap-3">
+          <h2 class="text-lg leading-none text-[var(--fg)]">{{ .Key }}</h2>
+          <div class="flex flex-col gap-1.5">
+            {{ range .Pages }}
+              <article class="timeline-item py-2">
+                <div class="flex flex-col gap-1 sm:grid sm:grid-cols-[92px_minmax(0,1fr)] sm:items-start sm:gap-x-4">
+                  <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)] sm:pt-0.5">
+                    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2" }}</time>
+                  </p>
+                  <div class="flex flex-col gap-1.5">
+                    <h3 class="text-base leading-snug">
+                      <a class="font-normal hover:font-bold" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                    </h3>
+                    {{ with .Params.tags }}
+                      <div class="flex flex-wrap gap-1.5 text-[0.65rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+                        {{ range . }}
+                          <a class="hover:underline hover:underline-offset-2" href="{{ "tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a>
+                        {{ end }}
+                      </div>
+                    {{ end }}
+                  </div>
+                </div>
+              </article>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+    </section>
+  {{ end }}
+{{ end }}

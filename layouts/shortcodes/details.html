@@ -1,0 +1,10 @@
+{{- $title := .Get "title" | default "Details" -}}
+{{- $closed := .Get "closed" | default "false" -}}
+{{- $isClosed := eq (lower (printf "%v" $closed)) "true" -}}
+
+<details class="sc-details"{{ if not $isClosed }} open{{ end }}>
+  <summary class="sc-details__summary">{{ $title }}</summary>
+  <div class="sc-details__content">
+    {{ .Inner | markdownify }}
+  </div>
+</details>

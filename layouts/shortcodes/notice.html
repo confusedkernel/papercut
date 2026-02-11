@@ -1,0 +1,14 @@
+{{- $type := lower (.Get "type" | default "note") -}}
+{{- if not (in (slice "note" "info" "tip" "warning" "danger" "success") $type) -}}
+  {{- $type = "note" -}}
+{{- end -}}
+{{- $title := .Get "title" | default "" -}}
+
+<div class="sc-notice sc-notice--{{ $type }}">
+  {{- with $title -}}
+    <div class="sc-notice__title">{{ . }}</div>
+  {{- end -}}
+  <div class="sc-notice__content">
+    {{ .Inner | markdownify }}
+  </div>
+</div>

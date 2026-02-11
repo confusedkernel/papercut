@@ -1,0 +1,54 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>
+  {{ if .IsHome }}
+    {{ .Site.Title }}
+  {{ else }}
+    {{ .Title }} | {{ .Site.Title }}
+  {{ end }}
+</title>
+
+{{ with .Site.Params.description }}
+  <meta name="description" content="{{ . }}" />
+{{ end }}
+
+{{ with .Site.Params.favicon }}
+  <link rel="icon" href="{{ . | relURL }}" />
+{{ end }}
+
+<script>
+  (function () {
+    try {
+      var theme = localStorage.getItem("papercut-theme");
+      if (theme === null) {
+        theme = localStorage.getItem("cardinal-theme");
+      }
+      if (theme === "light" || theme === "dark") {
+        document.documentElement.setAttribute("data-theme", theme);
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+    } catch (e) {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  })();
+</script>
+
+<script defer src="{{ "js/theme-switcher.js" | relURL }}"></script>
+<script defer src="{{ "js/code-blocks.js" | relURL }}"></script>
+<script defer src="{{ "js/search-toggle.js" | relURL }}"></script>
+<script defer src="{{ "js/toc-active.js" | relURL }}"></script>
+<script defer src="{{ "js/heading-links.js" | relURL }}"></script>
+<script defer src="{{ "js/card-interactions.js" | relURL }}"></script>
+<script defer src="{{ "js/header-divider.js" | relURL }}"></script>
+
+<link
+  id="chroma-theme"
+  rel="stylesheet"
+  data-light-href="{{ "css/latte-chroma-style.css" | relURL }}"
+  data-dark-href="{{ "css/mocha-chroma-style.css" | relURL }}"
+  href="{{ "css/latte-chroma-style.css" | relURL }}"
+/>
+<link rel="stylesheet" href="{{ "css/tailwind.css" | relURL }}" />
+<link rel="stylesheet" href="{{ "css/theme.css" | relURL }}" />

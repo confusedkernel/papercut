@@ -1,0 +1,155 @@
+{{ define "main" }}
+  <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.10)] sm:p-6">
+    <div class="flex flex-col gap-3">
+      <p class="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
+        {{ .Section | default "Posts" }}
+      </p>
+      <h1 class="text-2xl sm:text-3xl">{{ .Title }}</h1>
+      {{ with .Content }}
+        <div class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</div>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
+      {{ $isPostsList := or (eq .Section "posts") (eq .RelPermalink "/posts/") }}
+      {{ if $isPostsList }}
+        {{ $paginator := .Paginate .Pages 5 }}
+        {{ range $paginator.Pages }}
+          <article
+            class="interactive-card grid gap-3 border border-[var(--border)] bg-[var(--bg-alt)] p-4 sm:grid-cols-[120px_1fr] sm:p-5 md:grid-cols-[140px_1fr]"
+            data-card-href="{{ .RelPermalink }}"
+          >
+            <div class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">
+              <time datetime="{{ .Date.Format "2006-01-02" }}">
+                {{ .Date.Format "Jan 2, 2006" }}
+              </time>
+            </div>
+            <div class="flex flex-col gap-2">
+              <h2 class="text-lg">
+                <a class="hover:underline" href="{{ .RelPermalink }}">{{ .Title }}</a>
+              </h2>
+              {{ if or .Params.categories .Params.tags }}
+                <div class="flex flex-wrap gap-2 text-[0.65rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+                  {{ with .Params.categories }}
+                    {{ range . }}
+                      <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "categories/" | relURL }}{{ . | urlize }}/">
+                        {{ . }}
+                      </a>
+                    {{ end }}
+                  {{ end }}
+                  {{ with .Params.tags }}
+                    {{ range . }}
+                      <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "tags/" | relURL }}{{ . | urlize }}/">
+                        #{{ . }}
+                      </a>
+                    {{ end }}
+                  {{ end }}
+                </div>
+              {{ end }}
+              {{ with .Params.description }}
+                <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</p>
+              {{ else }}
+                <p class="text-sm leading-relaxed text-[var(--muted)]">{{ .Summary }}</p>
+              {{ end }}
+            </div>
+          </article>
+        {{ end }}
+
+        {{ if gt $paginator.TotalPages 1 }}
+          <nav aria-label="Pagination" class="mt-1 flex flex-wrap items-center justify-center gap-2">
+            {{ if $paginator.HasPrev }}
+              <a class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] uppercase tracking-[0.08em]" href="{{ $paginator.Prev.URL }}">
+                Prev
+              </a>
+            {{ end }}
+
+            {{ range $paginator.Pagers }}
+              <a
+                class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] uppercase tracking-[0.08em] {{ if eq .PageNumber $paginator.PageNumber }}font-bold text-[var(--fg)]{{ else }}text-[var(--muted)]{{ end }}"
+                href="{{ .URL }}"
+                {{ if eq .PageNumber $paginator.PageNumber }}aria-current="page"{{ end }}
+              >
+                {{ .PageNumber }}
+              </a>
+            {{ end }}
+
+            {{ if $paginator.HasNext }}
+              <a class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] uppercase tracking-[0.08em]" href="{{ $paginator.Next.URL }}">
+                Next
+              </a>
+            {{ end }}
+          </nav>
+        {{ end }}
+      {{ else }}
+        {{ range .Pages }}
+          <article
+            class="interactive-card grid gap-3 border border-[var(--border)] bg-[var(--bg-alt)] p-4 sm:grid-cols-[120px_1fr] sm:p-5 md:grid-cols-[140px_1fr]"
+            data-card-href="{{ .RelPermalink }}"
+          >
+            <div class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">
+              <time datetime="{{ .Date.Format "2006-01-02" }}">
+                {{ .Date.Format "Jan 2, 2006" }}
+              </time>
+            </div>
+            <div class="flex flex-col gap-2">
+              <h2 class="text-lg">
+                <a class="hover:underline" href="{{ .RelPermalink }}">{{ .Title }}</a>
+              </h2>
+              {{ if or .Params.categories .Params.tags }}
+                <div class="flex flex-wrap gap-2 text-[0.65rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+                  {{ with .Params.categories }}
+                    {{ range . }}
+                      <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "categories/" | relURL }}{{ . | urlize }}/">
+                        {{ . }}
+                      </a>
+                    {{ end }}
+                  {{ end }}
+                  {{ with .Params.tags }}
+                    {{ range . }}
+                      <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "tags/" | relURL }}{{ . | urlize }}/">
+                        #{{ . }}
+                      </a>
+                    {{ end }}
+                  {{ end }}
+                </div>
+              {{ end }}
+              {{ with .Params.description }}
+                <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</p>
+              {{ else }}
+                <p class="text-sm leading-relaxed text-[var(--muted)]">{{ .Summary }}</p>
+              {{ end }}
+            </div>
+          </article>
+        {{ end }}
+      {{ end }}
+    </div>
+  </section>
+
+  {{ if or (eq .Section "posts") (eq .RelPermalink "/posts/") }}
+    {{ $categoriesPage := .Site.GetPage "/categories/" }}
+    {{ $tagsPage := .Site.GetPage "/tags/" }}
+    {{ $archivesPage := .Site.GetPage "/archives/" }}
+    {{ $quickLinks := slice }}
+    {{ with $categoriesPage }}
+      {{ $quickLinks = $quickLinks | append (dict "label" "categories" "url" .RelPermalink) }}
+    {{ end }}
+    {{ with $tagsPage }}
+      {{ $quickLinks = $quickLinks | append (dict "label" "tags" "url" .RelPermalink) }}
+    {{ end }}
+    {{ with $archivesPage }}
+      {{ $quickLinks = $quickLinks | append (dict "label" "archives" "url" .RelPermalink) }}
+    {{ end }}
+    {{ if gt (len $quickLinks) 0 }}
+      <section class="border-t border-[var(--border)] pt-5 text-center">
+        <nav aria-label="Browse taxonomy links" class="text-sm tracking-[0.08em] text-[var(--muted)]">
+          {{ range $index, $item := $quickLinks }}
+            {{ if gt $index 0 }}<span class="px-1.5">/</span>{{ end }}
+            <a class="underline-offset-4 transition-colors hover:text-[var(--fg)] hover:underline" href="{{ $item.url }}">{{ $item.label }}</a>
+          {{ end }}
+        </nav>
+      </section>
+    {{ end }}
+  {{ end }}
+{{ end }}

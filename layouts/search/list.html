@@ -1,0 +1,50 @@
+{{ define "main" }}
+  <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.10)] sm:p-6">
+    <div class="flex flex-col gap-3">
+      <p class="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Search</p>
+      <h1 class="text-2xl sm:text-3xl">{{ .Title }}</h1>
+      {{ with .Content }}
+        <div class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</div>
+      {{ end }}
+
+      <form id="search-page-form" class="mt-1 flex w-full items-center gap-2" role="search" method="get" action="{{ "search/" | relURL }}">
+        <label class="sr-only" for="search-page-input">Search posts and pages</label>
+        <input
+          id="search-page-input"
+          name="q"
+          type="search"
+          placeholder="Search posts and pages"
+          class="h-9 w-full border border-[var(--border)] bg-[var(--bg)] px-3 text-sm text-[var(--fg)] placeholder:text-[var(--muted)] focus:outline-none"
+        />
+        <button type="submit" class="index-hover h-9 border border-[var(--border)] bg-[var(--bg-alt)] px-3 text-xs uppercase tracking-[0.08em]">
+          Search
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <p id="search-count" class="text-xs uppercase tracking-[0.1em] text-[var(--muted)]"></p>
+    <div id="search-results" class="flex flex-col gap-3"></div>
+    <p id="search-empty" class="hidden text-sm text-[var(--muted)]">No results found. Try a different term.</p>
+  </section>
+
+  {{ $pages := where .Site.RegularPages "Section" "ne" "search" }}
+  {{ $searchable := where $pages "Params.searchExclude" "ne" true }}
+  {{ $entries := slice }}
+  {{ range $searchable.ByDate.Reverse }}
+    {{ $entries = $entries | append (dict
+      "title" .Title
+      "url" (printf "%s" .RelPermalink)
+      "summary" (or .Params.description (.Summary | plainify))
+      "section" .Section
+      "date" (.Date.Format "Jan 2, 2006")
+      "tags" (delimit (default (slice) .Params.tags) " ")
+      "categories" (delimit (default (slice) .Params.categories) " ")
+    ) }}
+  {{ end }}
+  <script id="search-data" type="application/json">
+    {{ $entries | jsonify | safeJS }}
+  </script>
+  <script defer src="{{ "js/search-page.js" | relURL }}"></script>
+{{ end }}

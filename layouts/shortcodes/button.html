@@ -1,0 +1,35 @@
+{{- $url := .Get "url" | default "#" -}}
+{{- $text := .Get "text" | default "Button" -}}
+{{- $variant := lower (.Get "variant" | default "primary") -}}
+{{- if not (in (slice "primary" "secondary" "outline") $variant) -}}
+  {{- $variant = "primary" -}}
+{{- end -}}
+{{- $size := lower (.Get "size" | default "md") -}}
+{{- if not (in (slice "sm" "md" "lg") $size) -}}
+  {{- $size = "md" -}}
+{{- end -}}
+{{- $target := .Get "target" | default "" -}}
+{{- if eq $target "" -}}
+  {{- if or (hasPrefix $url "http://") (hasPrefix $url "https://") -}}
+    {{- $target = "_blank" -}}
+  {{- else -}}
+    {{- $target = "_self" -}}
+  {{- end -}}
+{{- end -}}
+{{- $rel := .Get "rel" | default "" -}}
+{{- if and (eq $target "_blank") (eq $rel "") -}}
+  {{- $rel = "noopener noreferrer" -}}
+{{- end -}}
+{{- $icon := .Get "icon" | default "" -}}
+
+<a
+  class="sc-btn sc-btn--{{ $variant }} sc-btn--{{ $size }}"
+  href="{{ $url }}"
+  target="{{ $target }}"
+  {{- with $rel }} rel="{{ . }}"{{ end -}}
+>
+  {{- if $icon -}}
+    {{ partial "shortcode-icon.html" (dict "name" $icon "class" "sc-btn__icon" "size" "1em") }}
+  {{- end -}}
+  <span>{{ $text }}</span>
+</a>

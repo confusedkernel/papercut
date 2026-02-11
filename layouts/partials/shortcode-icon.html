@@ -1,0 +1,37 @@
+{{- $icons := site.Data.icons | default dict -}}
+{{- $name := lower (default "" .name) -}}
+{{- $aliases := dict "circle-info" "info" "alert" "warning" "triangle-alert" "warning" "check-circle" "check" "file" "document" -}}
+{{- if and (eq (index $icons $name) nil) (ne (index $aliases $name) nil) -}}
+  {{- $name = index $aliases $name -}}
+{{- end -}}
+
+{{- $svg := index $icons $name | default (index $icons "info") | default "" -}}
+{{- if $svg -}}
+  {{- $attrs := strings.TrimSpace (default "" .attributes) -}}
+  {{- $class := strings.TrimSpace (default "" .class) -}}
+  {{- $size := default "" .size -}}
+
+  {{- $hasClass := gt (len (findRE "(^|\\s)class\\s*=" $attrs)) 0 -}}
+  {{- $hasWidth := gt (len (findRE "(^|\\s)width\\s*=" $attrs)) 0 -}}
+  {{- $hasHeight := gt (len (findRE "(^|\\s)height\\s*=" $attrs)) 0 -}}
+
+  {{- $legacyAttrs := slice -}}
+  {{- if and $class (not $hasClass) -}}
+    {{- $legacyAttrs = $legacyAttrs | append (printf "class=%q" $class) -}}
+  {{- end -}}
+  {{- if $size -}}
+    {{- if not $hasWidth -}}
+      {{- $legacyAttrs = $legacyAttrs | append (printf "width=%q" $size) -}}
+    {{- end -}}
+    {{- if not $hasHeight -}}
+      {{- $legacyAttrs = $legacyAttrs | append (printf "height=%q" $size) -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $merged := strings.TrimSpace (printf "%s %s" (delimit $legacyAttrs " ") $attrs) -}}
+  {{- $output := $svg -}}
+  {{- if $merged -}}
+    {{- $output = replaceRE "<svg\\s*" (printf "<svg %s " $merged) $svg 1 -}}
+  {{- end -}}
+  {{- $output | safeHTML -}}
+{{- end -}}

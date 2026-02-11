@@ -1,0 +1,25 @@
+{{ define "main" }}
+  <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.10)] sm:p-6">
+    <nav aria-label="Breadcrumb" class="text-sm uppercase tracking-[0.08em] text-[var(--muted)]">
+      <span>Taxonomies</span>
+      <span class="px-2">&gt;</span>
+      <span class="text-[var(--fg)]">{{ .Title }}</span>
+    </nav>
+    <h1 class="mt-2 text-2xl sm:text-3xl">{{ .Title }}</h1>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <ul class="flex flex-wrap gap-2">
+      {{ range .Data.Terms.Alphabetical }}
+        <li>
+          <a
+            class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
+            href="{{ .Page.RelPermalink }}"
+          >
+            {{ .Page.Title }}<sup class="ml-1 text-[0.6rem]">{{ .Count }}</sup>
+          </a>
+        </li>
+      {{ end }}
+    </ul>
+  </section>
+{{ end }}

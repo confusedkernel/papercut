@@ -1,0 +1,79 @@
+{{- $link := .Get "link" | default ( .Get "url" | default "#" ) -}}
+{{- $title := .Get "title" | default "Card" -}}
+{{- $subtitle := .Get "subtitle" | default "" -}}
+{{- $icon := .Get "icon" | default "" -}}
+{{- $image := .Get "image" | default "" -}}
+{{- $imageAlt := .Get "imageAlt" | default $title -}}
+{{- $imageStyle := .Get "imageStyle" | default "" -}}
+{{- $method := .Get "method" | default "Resize" -}}
+{{- $options := .Get "options" | default "800x q80 webp" -}}
+{{- $tag := .Get "tag" | default "" -}}
+{{- $target := .Get "target" | default "" -}}
+{{- if eq $target "" -}}
+  {{- if or (hasPrefix $link "http://") (hasPrefix $link "https://") -}}
+    {{- $target = "_blank" -}}
+  {{- else -}}
+    {{- $target = "_self" -}}
+  {{- end -}}
+{{- end -}}
+{{- $rel := .Get "rel" | default "" -}}
+{{- if and (eq $target "_blank") (eq $rel "") -}}
+  {{- $rel = "noopener noreferrer" -}}
+{{- end -}}
+
+{{- $imageSrc := "" -}}
+{{- if $image -}}
+  {{- if or (hasPrefix $image "http://") (hasPrefix $image "https://") -}}
+    {{- $imageSrc = $image -}}
+  {{- else if hasPrefix $image "/" -}}
+    {{- $imageSrc = $image | relURL -}}
+  {{- else -}}
+    {{- $imageResource := resources.Get $image -}}
+    {{- if and (not $imageResource) .Page -}}
+      {{- $imageResource = .Page.Resources.GetMatch $image -}}
+    {{- end -}}
+    {{- if $imageResource -}}
+      {{- $methodKey := lower $method -}}
+      {{- if eq $methodKey "fit" -}}
+        {{- $imageResource = $imageResource.Fit $options -}}
+      {{- else if eq $methodKey "fill" -}}
+        {{- $imageResource = $imageResource.Fill $options -}}
+      {{- else if eq $methodKey "crop" -}}
+        {{- $imageResource = $imageResource.Crop $options -}}
+      {{- else -}}
+        {{- $imageResource = $imageResource.Resize $options -}}
+      {{- end -}}
+      {{- $imageSrc = $imageResource.RelPermalink -}}
+    {{- else -}}
+      {{- $imageSrc = $image | relURL -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $hasSubtitle := ne (strings.TrimSpace $subtitle) "" -}}
+{{- $isIconTitleOnly := and (eq (strings.TrimSpace $tag) "") (not $hasSubtitle) (ne (strings.TrimSpace $icon) "") -}}
+
+<a class="sc-card{{ if $imageSrc }} sc-card--image{{ end }}{{ if $isIconTitleOnly }} sc-card--icon-title{{ end }}" href="{{ $link }}" target="{{ $target }}"{{ with $rel }} rel="{{ . }}"{{ end }}>
+  {{- with $imageSrc -}}
+    <span class="sc-card__image-wrap"><img class="sc-card__image" src="{{ . }}" alt="{{ $imageAlt }}" loading="lazy"{{ with $imageStyle }} style="{{ . }}"{{ end }} /></span>
+  {{- end -}}
+  <span class="sc-card__body">
+    {{- if $isIconTitleOnly -}}
+      <span class="sc-card__headline">
+        {{ partial "shortcode-icon.html" (dict "name" $icon "class" "sc-card__icon sc-card__icon--headline" "size" "1rem") }}
+        <span class="sc-card__title">{{ $title }}</span>
+      </span>
+    {{- else -}}
+      {{- if or $icon $tag -}}
+        <span class="sc-card__meta">
+          {{- with $icon -}}
+            {{ partial "shortcode-icon.html" (dict "name" . "class" "sc-card__icon" "size" "1rem") }}
+          {{- end -}}
+          {{- with $tag -}}<span class="sc-card__tag">{{ . }}</span>{{- end -}}
+        </span>
+      {{- end -}}
+      <span class="sc-card__title">{{ $title }}</span>
+      {{- with $subtitle -}}<div class="sc-card__subtitle">{{ . | markdownify }}</div>{{- end -}}
+    {{- end -}}
+  </span>
+</a>
