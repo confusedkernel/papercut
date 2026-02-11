@@ -111,13 +111,7 @@
             class="interactive-card flex w-full flex-col gap-3 border border-[var(--border)] bg-[var(--bg-alt)] p-4 sm:p-5 md:w-[calc(50%-0.5rem)]"
             data-card-href="{{ .RelPermalink }}"
           >
-            {{ with .Params.cover }}
-              <img
-                class="h-40 w-full border border-[var(--border)] object-cover sm:h-44"
-                src="{{ . | relURL }}"
-                alt=""
-              />
-            {{ end }}
+            {{ partial "project-cover.html" . }}
             <h3 class="text-lg">
               <a class="hover:underline" href="{{ .RelPermalink }}">{{ .Title }}</a>
             </h3>

@@ -69,6 +69,20 @@ avatar = "/images/avatar.svg"
 avatar_alt = "Portrait of the author"
 ```
 
+Project cover framing (optional): add these to `content/projects/*.md` front matter:
+
+```toml
+cover = "/images/project-cover.jpg"
+coverScale = 1.12
+coverOffsetY = "12px"
+coverOffsetX = "50%"
+```
+
+- `coverScale`: zoom amount (default `1`)
+- `coverOffsetY`: vertical focal offset (accepts CSS lengths/percentages, e.g. `"12px"`, `"55%"`)
+- `coverOffsetX`: horizontal focal offset (default `"50%"`)
+- Snake case variants are also supported: `cover_scale`, `cover_offset_y`, `cover_offset_x`
+
 ## Code blocks and syntax highlighting
 
 papercut uses Hugo's built-in Chroma highlighter for fenced code blocks. If your site config already defines `[markup.highlight]`, keep your existing values.
