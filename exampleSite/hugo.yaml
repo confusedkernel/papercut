@@ -1,0 +1,51 @@
+baseURL: "https://example.com/"
+languageCode: "en-us"
+title: "papercut"
+theme: "papercut"
+themesDir: "../.."
+
+params:
+  tagline: "Documentation and release notes"
+  author: "papercut demo"
+  copyright: "© 2026 papercut demo"
+  description: "Documentation-first demo site for the papercut Hugo theme."
+  avatar: "/images/avatar.svg"
+  announcement: "v0.1.0 docs are live: install guide, customization reference, and deployment notes."
+  social:
+    - name: "GitHub"
+      url: "https://github.com/example"
+    - name: "Mastodon"
+      url: "https://example.social/@papercut"
+    - name: "Email"
+      url: "mailto:hello@papercut.test"
+
+menu:
+  main:
+    - name: "About"
+      url: "/about/"
+      weight: 1
+    - name: "Projects"
+      url: "/projects/"
+      weight: 2
+    - name: "Posts"
+      url: "/posts/"
+      weight: 3
+    - name: "Archives"
+      url: "/archives/"
+      weight: 4
+
+taxonomies:
+  tag: "tags"
+  category: "categories"
+
+pagination:
+  pagerSize: 5
+
+markup:
+  highlight:
+    codeFences: true
+    guessSyntax: true
+    lineNos: false
+    lineNumbersInTable: false
+    noClasses: false
+    style: "catppuccin-latte"
