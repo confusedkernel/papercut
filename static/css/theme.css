@@ -137,6 +137,10 @@ body {
 }
 
 .site-header {
+  position: relative;
+  isolation: isolate;
+  background: var(--bg);
+  opacity: 1;
   border-bottom-color: transparent;
   transition: border-bottom-color 180ms ease;
 }
@@ -294,6 +298,43 @@ img {
 
 .post-content li {
   margin: 0.4rem 0;
+}
+
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.post-content th,
+.post-content td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.post-content thead th {
+  background: var(--hover-bg);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.post-content tbody tr:nth-child(even) {
+  background: var(--bg);
+}
+
+@media (max-width: 767px) {
+  .post-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
 
 .post-content blockquote {

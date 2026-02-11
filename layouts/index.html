@@ -45,9 +45,6 @@
   {{ end }}
 
   {{ $posts := where .Site.RegularPages "Section" "posts" }}
-  {{ if not $posts }}
-    {{ $posts = .Site.RegularPages }}
-  {{ end }}
 
   {{ if gt (len $posts) 0 }}
     <section class="flex flex-col gap-4">
@@ -55,7 +52,7 @@
         <h2 class="text-sm uppercase tracking-[0.12em]">Latest posts</h2>
         <a
           class="text-xs uppercase tracking-[0.12em] text-[var(--muted)] underline-offset-4 hover:underline"
-          href="{{ (index $posts 0).Section | printf "/%s/" | relURL }}"
+          href="{{ "/posts/" | relURL }}"
         >
           View all
         </a>
