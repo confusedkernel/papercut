@@ -13,8 +13,8 @@
   {{ if and $toc (eq .Section "posts") }}
     <div class="relative">
       <aside class="toc-outside hidden xl:block">
-        <div class="pr-2">
-          <p class="mb-3 text-xs uppercase tracking-[0.12em] text-[var(--muted)]">On this page</p>
+        <div class="toc-outside__panel">
+          <p class="toc-outside__title text-xs uppercase tracking-[0.12em] text-[var(--muted)]">On this page</p>
           <div class="toc">{{ $toc }}</div>
         </div>
       </aside>
