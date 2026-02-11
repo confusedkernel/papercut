@@ -1,5 +1,62 @@
 {{ define "main" }}
   {{ $isTaxonomyList := eq .Kind "taxonomy" }}
+  {{ $taxonomyName := .Data.Plural }}
+  {{ if eq $taxonomyName "" }}
+    {{ $taxonomyName = .Section }}
+  {{ end }}
+
+  {{ $normalizedCounts := dict }}
+  {{ if and $isTaxonomyList (ne $taxonomyName "") }}
+    {{ range .Site.RegularPages }}
+      {{ $page := . }}
+      {{ $rawTerms := $page.Param $taxonomyName }}
+      {{ $terms := slice }}
+      {{ if reflect.IsSlice $rawTerms }}
+        {{ $terms = $rawTerms }}
+      {{ else if $rawTerms }}
+        {{ $terms = slice $rawTerms }}
+      {{ end }}
+
+      {{ $seenOnPage := dict }}
+      {{ range $terms }}
+        {{ $termKey := lower (strings.TrimSpace (printf "%v" .)) }}
+        {{ if and (ne $termKey "") (not (index $seenOnPage $termKey)) }}
+          {{ $seenOnPage = merge $seenOnPage (dict $termKey true) }}
+          {{ $current := index $normalizedCounts $termKey | default 0 }}
+          {{ $normalizedCounts = merge $normalizedCounts (dict $termKey (add $current 1)) }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ $matchingPages := .Pages }}
+  {{ if and (not $isTaxonomyList) (ne $taxonomyName "") }}
+    {{ $termKey := lower (strings.TrimSpace .Title) }}
+    {{ $matchingPages = slice }}
+    {{ range .Site.RegularPages }}
+      {{ $page := . }}
+      {{ $rawTerms := $page.Param $taxonomyName }}
+      {{ $terms := slice }}
+      {{ if reflect.IsSlice $rawTerms }}
+        {{ $terms = $rawTerms }}
+      {{ else if $rawTerms }}
+        {{ $terms = slice $rawTerms }}
+      {{ end }}
+
+      {{ $matchesTerm := false }}
+      {{ range $terms }}
+        {{ $value := lower (strings.TrimSpace (printf "%v" .)) }}
+        {{ if eq $value $termKey }}
+          {{ $matchesTerm = true }}
+        {{ end }}
+      {{ end }}
+
+      {{ if $matchesTerm }}
+        {{ $matchingPages = $matchingPages | append $page }}
+      {{ end }}
+    {{ end }}
+    {{ $matchingPages = sort $matchingPages "Date" "desc" }}
+  {{ end }}
 
   <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_14px_24px_-18px_rgba(0,0,0,0.35)] sm:p-6">
     <nav aria-label="Breadcrumb" class="text-sm uppercase tracking-[0.08em] text-[var(--muted)]">
@@ -19,22 +76,28 @@
   {{ if $isTaxonomyList }}
     <section class="flex flex-col gap-4">
       <ul class="flex flex-wrap gap-2">
+        {{ $seenTerms := dict }}
         {{ range .Data.Terms.Alphabetical }}
-          <li>
-            <a
-              class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
-              href="{{ .Page.RelPermalink }}"
-            >
-              {{ .Page.Title }}<sup class="ml-1 text-[0.6rem]">{{ .Count }}</sup>
-            </a>
-          </li>
+          {{ $termKey := lower (strings.TrimSpace .Page.Title) }}
+          {{ if not (index $seenTerms $termKey) }}
+            {{ $seenTerms = merge $seenTerms (dict $termKey true) }}
+            {{ $termCount := index $normalizedCounts $termKey | default (len .Page.RegularPages) }}
+            <li>
+              <a
+                class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
+                href="{{ printf "/%s/%s/" $taxonomyName ($termKey | urlize) | relURL }}"
+              >
+                {{ .Page.Title }}<sup class="ml-1 text-[0.6rem]">{{ $termCount }}</sup>
+              </a>
+            </li>
+          {{ end }}
         {{ end }}
       </ul>
     </section>
   {{ else }}
     <section class="flex flex-col gap-4">
       <div class="flex flex-col gap-4">
-        {{ range .Pages }}
+        {{ range $matchingPages }}
           <article
             class="interactive-card grid gap-3 border border-[var(--border)] bg-[var(--bg-alt)] p-4 sm:grid-cols-[120px_1fr] sm:p-5 md:grid-cols-[140px_1fr]"
             data-card-href="{{ .RelPermalink }}"

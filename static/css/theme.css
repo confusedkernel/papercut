@@ -71,6 +71,8 @@
   --border: #000000;
   --hover-bg: #efefef;
   --inline-code-bg: #f6f6f6;
+  --inline-link: #1a1a1a;
+  --inline-link-hover: #252525;
   --header-drop-shadow: rgba(0, 0, 0, 0.14);
   --post-shell-shadow: 0 14px 24px -18px rgba(0, 0, 0, 0.35);
   --card-base-shadow: 0 12px 20px -16px rgba(0, 0, 0, 0.34);
@@ -88,6 +90,8 @@ html[data-theme="light"] {
   --border: #000000;
   --hover-bg: #efefef;
   --inline-code-bg: #f6f6f6;
+  --inline-link: #1a1a1a;
+  --inline-link-hover: #252525;
   --header-drop-shadow: rgba(0, 0, 0, 0.14);
   --post-shell-shadow: 0 14px 24px -18px rgba(0, 0, 0, 0.35);
   --card-base-shadow: 0 12px 20px -16px rgba(0, 0, 0, 0.34);
@@ -103,6 +107,8 @@ html[data-theme="dark"] {
   --border: #d8d8d8;
   --hover-bg: #2a2a2a;
   --inline-code-bg: #3a3a3a;
+  --inline-link: #fafafa;
+  --inline-link-hover: #ffffff;
   --header-drop-shadow: rgba(255, 255, 255, 0.2);
   --post-shell-shadow: 0 14px 24px -18px rgba(255, 255, 255, 0.32);
   --card-base-shadow: 0 12px 20px -16px rgba(255, 255, 255, 0.28);
@@ -118,6 +124,8 @@ html[data-theme="dark"] {
     --border: #d8d8d8;
     --hover-bg: #2a2a2a;
     --inline-code-bg: #3a3a3a;
+    --inline-link: #fafafa;
+    --inline-link-hover: #ffffff;
     --header-drop-shadow: rgba(255, 255, 255, 0.2);
     --post-shell-shadow: 0 14px 24px -18px rgba(255, 255, 255, 0.32);
     --card-base-shadow: 0 12px 20px -16px rgba(255, 255, 255, 0.28);
@@ -336,9 +344,21 @@ img {
   margin: 1rem 0;
 }
 
-.post-content a {
+.post-content a:not(.sc-btn):not(.sc-link-card):not(.sc-card),
+.prose-inline-links a:not(.sc-btn):not(.sc-link-card):not(.sc-card) {
+  color: var(--inline-link);
+  font-weight: 400;
   text-decoration: underline;
   text-underline-offset: 0.2em;
+  transition: color 160ms ease, font-weight 160ms ease;
+}
+
+.post-content a:not(.sc-btn):not(.sc-link-card):not(.sc-card):hover,
+.post-content a:not(.sc-btn):not(.sc-link-card):not(.sc-card):focus-visible,
+.prose-inline-links a:not(.sc-btn):not(.sc-link-card):not(.sc-card):hover,
+.prose-inline-links a:not(.sc-btn):not(.sc-link-card):not(.sc-card):focus-visible {
+  color: var(--inline-link-hover);
+  font-weight: 700;
 }
 
 .post-content ul,
@@ -1181,7 +1201,18 @@ img {
   color: var(--muted);
 }
 
+.sc-card__icon-image {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+}
+
 .sc-card__icon--headline {
+  flex-shrink: 0;
+}
+
+.sc-card__icon-image--headline {
   flex-shrink: 0;
 }
 

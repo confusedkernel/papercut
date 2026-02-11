@@ -1,3 +1,6 @@
-<div class="sc-steps">
+{{- $excludeRaw := .Get "exclude" | default false -}}
+{{- $exclude := in (slice "true" "1" "yes" "on") (lower (printf "%v" $excludeRaw)) -}}
+
+<div class="sc-steps"{{ if $exclude }} data-toc-exclude="true"{{ end }}>
   {{ .Inner | markdownify }}
 </div>

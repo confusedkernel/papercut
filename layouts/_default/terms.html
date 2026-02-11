@@ -1,4 +1,33 @@
 {{ define "main" }}
+  {{ $taxonomyName := .Data.Plural }}
+  {{ if eq $taxonomyName "" }}
+    {{ $taxonomyName = lower .Title }}
+  {{ end }}
+
+  {{ $normalizedCounts := dict }}
+  {{ if ne $taxonomyName "" }}
+    {{ range .Site.RegularPages }}
+      {{ $page := . }}
+      {{ $rawTerms := $page.Param $taxonomyName }}
+      {{ $terms := slice }}
+      {{ if reflect.IsSlice $rawTerms }}
+        {{ $terms = $rawTerms }}
+      {{ else if $rawTerms }}
+        {{ $terms = slice $rawTerms }}
+      {{ end }}
+
+      {{ $seenOnPage := dict }}
+      {{ range $terms }}
+        {{ $termKey := lower (strings.TrimSpace (printf "%v" .)) }}
+        {{ if and (ne $termKey "") (not (index $seenOnPage $termKey)) }}
+          {{ $seenOnPage = merge $seenOnPage (dict $termKey true) }}
+          {{ $current := index $normalizedCounts $termKey | default 0 }}
+          {{ $normalizedCounts = merge $normalizedCounts (dict $termKey (add $current 1)) }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
   <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_14px_24px_-18px_rgba(0,0,0,0.35)] sm:p-6">
     <nav aria-label="Breadcrumb" class="text-sm uppercase tracking-[0.08em] text-[var(--muted)]">
       <span>Taxonomies</span>
@@ -10,15 +39,21 @@
 
   <section class="flex flex-col gap-4">
     <ul class="flex flex-wrap gap-2">
+      {{ $seenTerms := dict }}
       {{ range .Data.Terms.Alphabetical }}
-        <li>
-          <a
-            class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
-            href="{{ .Page.RelPermalink }}"
-          >
-            {{ .Page.Title }}<sup class="ml-1 text-[0.6rem]">{{ .Count }}</sup>
-          </a>
-        </li>
+        {{ $termKey := lower (strings.TrimSpace .Page.Title) }}
+        {{ if not (index $seenTerms $termKey) }}
+          {{ $seenTerms = merge $seenTerms (dict $termKey true) }}
+          {{ $termCount := index $normalizedCounts $termKey | default (len .Page.RegularPages) }}
+          <li>
+            <a
+              class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
+              href="{{ printf "/%s/%s/" $taxonomyName ($termKey | urlize) | relURL }}"
+            >
+              {{ .Page.Title }}<sup class="ml-1 text-[0.6rem]">{{ $termCount }}</sup>
+            </a>
+          </li>
+        {{ end }}
       {{ end }}
     </ul>
   </section>

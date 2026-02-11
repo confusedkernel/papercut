@@ -50,8 +50,43 @@
   {{- end -}}
 {{- end -}}
 
+{{- $iconValue := strings.TrimSpace $icon -}}
+{{- $iconLower := lower $iconValue -}}
+{{- $iconIsFavicon := eq $iconLower "favicon" -}}
+{{- $iconIsExternal := or (hasPrefix $iconValue "http://") (hasPrefix $iconValue "https://") -}}
+{{- $iconIsAbsolute := hasPrefix $iconValue "/" -}}
+{{- $iconIsData := hasPrefix $iconValue "data:" -}}
+{{- $iconLooksLikeFile := gt (len (findRE "\\.(svg|png|jpe?g|webp|gif|ico)(\\?.*)?$" $iconLower)) 0 -}}
+{{- $iconIsRelativePath := and (not $iconIsExternal) (not $iconIsAbsolute) (not $iconIsData) (or (hasPrefix $iconValue "./") (hasPrefix $iconValue "../") (gt (len (findRE "/" $iconValue)) 0) $iconLooksLikeFile) -}}
+{{- $iconImageSrc := "" -}}
+{{- $iconFallbackSrc := "" -}}
+{{- if and $iconIsFavicon (or (hasPrefix $link "http://") (hasPrefix $link "https://")) -}}
+  {{- $host := replaceRE "^https?://([^/:?#]+).*$" "$1" $link -}}
+  {{- $origin := replaceRE "^(https?://[^/?#]+).*$" "$1" $link -}}
+  {{- if and $origin (ne $origin $link) -}}
+    {{- $iconFallbackSrc = printf "%s/favicon.ico" $origin -}}
+  {{- end -}}
+  {{- if and $host (ne $host $link) -}}
+    {{- $iconImageSrc = printf "https://www.google.com/s2/favicons?domain=%s&sz=64" ($host | urlquery) -}}
+  {{- end -}}
+{{- else if or $iconIsExternal $iconIsAbsolute $iconIsData $iconIsRelativePath -}}
+  {{- if $iconIsExternal -}}
+    {{- $iconImageSrc = $iconValue -}}
+  {{- else -}}
+    {{- $iconImageSrc = $iconValue | relURL -}}
+  {{- end -}}
+{{- end -}}
+{{- $iconName := "" -}}
+{{- if and (eq $iconImageSrc "") (ne $iconValue "") (not $iconIsFavicon) -}}
+  {{- $iconName = $iconValue -}}
+{{- end -}}
+{{- $iconFallbackAttr := "" -}}
+{{- with $iconFallbackSrc -}}
+  {{- $iconFallbackAttr = printf "onerror=%q" (printf "if(!this.dataset.faviconFallbackTried){this.dataset.faviconFallbackTried='1';this.src='%s';}" .) -}}
+{{- end -}}
+
 {{- $hasSubtitle := ne (strings.TrimSpace $subtitle) "" -}}
-{{- $isIconTitleOnly := and (eq (strings.TrimSpace $tag) "") (not $hasSubtitle) (ne (strings.TrimSpace $icon) "") -}}
+{{- $isIconTitleOnly := and (eq (strings.TrimSpace $tag) "") (not $hasSubtitle) (or (ne $iconName "") (ne $iconImageSrc "")) -}}
 
 <a class="sc-card{{ if $imageSrc }} sc-card--image{{ end }}{{ if $isIconTitleOnly }} sc-card--icon-title{{ end }}" href="{{ $link }}" target="{{ $target }}"{{ with $rel }} rel="{{ . }}"{{ end }}>
   {{- with $imageSrc -}}
@@ -60,14 +95,22 @@
   <span class="sc-card__body">
     {{- if $isIconTitleOnly -}}
       <span class="sc-card__headline">
-        {{ partial "shortcode-icon.html" (dict "name" $icon "class" "sc-card__icon sc-card__icon--headline" "size" "1rem") }}
+        {{- if $iconImageSrc -}}
+          <img class="sc-card__icon-image sc-card__icon-image--headline" src="{{ $iconImageSrc }}" alt="" loading="lazy" {{ with $iconFallbackAttr }}{{ . | safeHTMLAttr }}{{ end }} />
+        {{- else -}}
+          {{ partial "shortcode-icon.html" (dict "name" $iconName "class" "sc-card__icon sc-card__icon--headline" "size" "1rem") }}
+        {{- end -}}
         <span class="sc-card__title">{{ $title }}</span>
       </span>
     {{- else -}}
-      {{- if or $icon $tag -}}
+      {{- if or $iconName $iconImageSrc $tag -}}
         <span class="sc-card__meta">
-          {{- with $icon -}}
-            {{ partial "shortcode-icon.html" (dict "name" . "class" "sc-card__icon" "size" "1rem") }}
+          {{- if $iconImageSrc -}}
+            <img class="sc-card__icon-image" src="{{ $iconImageSrc }}" alt="" loading="lazy" {{ with $iconFallbackAttr }}{{ . | safeHTMLAttr }}{{ end }} />
+          {{- else -}}
+            {{- with $iconName -}}
+              {{ partial "shortcode-icon.html" (dict "name" . "class" "sc-card__icon" "size" "1rem") }}
+            {{- end -}}
           {{- end -}}
           {{- with $tag -}}<span class="sc-card__tag">{{ . }}</span>{{- end -}}
         </span>

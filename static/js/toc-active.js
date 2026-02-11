@@ -4,6 +4,105 @@
     return;
   }
 
+  function decodeHrefId(href) {
+    return decodeURIComponent((href || "").replace(/^#/, ""));
+  }
+
+  function getDirectChildList(item) {
+    if (!item) {
+      return null;
+    }
+
+    for (var i = 0; i < item.children.length; i += 1) {
+      if (item.children[i].tagName === "UL") {
+        return item.children[i];
+      }
+    }
+
+    return null;
+  }
+
+  function findTocLinkById(id) {
+    if (!id) {
+      return null;
+    }
+
+    var anchors = tocRoot.querySelectorAll('a[href^="#"]');
+    for (var i = 0; i < anchors.length; i += 1) {
+      if (decodeHrefId(anchors[i].getAttribute("href")) === id) {
+        return anchors[i];
+      }
+    }
+
+    return null;
+  }
+
+  function appendStepsHeadingsToToc() {
+    var rootList = tocRoot.querySelector("ul");
+    if (!rootList) {
+      return;
+    }
+
+    var existing = Object.create(null);
+    var existingLinks = tocRoot.querySelectorAll('a[href^="#"]');
+    for (var i = 0; i < existingLinks.length; i += 1) {
+      var existingId = decodeHrefId(existingLinks[i].getAttribute("href"));
+      if (existingId) {
+        existing[existingId] = true;
+      }
+    }
+
+    var stepBlocks = document.querySelectorAll('.sc-steps:not([data-toc-exclude="true"])');
+    if (!stepBlocks.length) {
+      return;
+    }
+
+    stepBlocks.forEach(function (block) {
+      var headings = block.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]");
+      if (!headings.length) {
+        return;
+      }
+
+      var targetList = rootList;
+      var cursor = block.previousElementSibling;
+
+      while (cursor) {
+        if (/^H[1-6]$/.test(cursor.tagName) && cursor.id) {
+          var parentLink = findTocLinkById(cursor.id);
+          if (parentLink) {
+            var parentItem = parentLink.closest("li");
+            if (parentItem) {
+              var nested = getDirectChildList(parentItem);
+              if (!nested) {
+                nested = document.createElement("ul");
+                parentItem.appendChild(nested);
+              }
+              targetList = nested;
+            }
+          }
+          break;
+        }
+        cursor = cursor.previousElementSibling;
+      }
+
+      headings.forEach(function (heading) {
+        if (!heading.id || existing[heading.id]) {
+          return;
+        }
+
+        var item = document.createElement("li");
+        var link = document.createElement("a");
+        link.setAttribute("href", "#" + encodeURIComponent(heading.id));
+        link.textContent = heading.textContent || heading.id;
+        item.appendChild(link);
+        targetList.appendChild(item);
+        existing[heading.id] = true;
+      });
+    });
+  }
+
+  appendStepsHeadingsToToc();
+
   var links = Array.prototype.slice.call(tocRoot.querySelectorAll('a[href^="#"]'));
   if (!links.length) {
     return;
@@ -11,7 +110,7 @@
 
   var items = links
     .map(function (link) {
-      var id = decodeURIComponent((link.getAttribute("href") || "").slice(1));
+      var id = decodeHrefId(link.getAttribute("href"));
       if (!id) {
         return null;
       }

@@ -32,14 +32,14 @@ This page demonstrates the custom shortcodes bundled with papercut.
 
 ```markdown
 {{</* links cols="2" */>}}
-  {{</* link title="Hugo" description="Fast static site generator" url="https://gohugo.io" icon="https://gohugo.io/favicon.ico" */>}}
-  {{</* link title="Go" description="Simple, secure, and scalable" url="https://go.dev" icon="https://go.dev/favicon.ico" */>}}
+  {{</* link title="Hugo" description="Fast static site generator" url="https://gohugo.io" icon="favicon" */>}}
+  {{</* link title="Go" description="Simple, secure, and scalable" url="https://go.dev" icon="sparkles" */>}}
 {{</* /links */>}}
 ```
 
 {{< links cols="2" >}}
-  {{< link title="Hugo" description="Fast static site generator" url="https://gohugo.io" icon="https://gohugo.io/favicon.ico" >}}
-  {{< link title="Go" description="Simple, secure, and scalable" url="https://go.dev" icon="https://go.dev/favicon.ico" >}}
+  {{< link title="Hugo" description="Fast static site generator" url="https://gohugo.io" icon="favicon" >}}
+  {{< link title="Go" description="Simple, secure, and scalable" url="https://go.dev" icon="sparkles" >}}
 {{< /links >}}
 
 ## Callout
@@ -71,7 +71,7 @@ Remember to rebuild your site after changing markup config.
 ```markdown
 {{</* cards cols="2" */>}}
   {{</* card link="/posts/" title="Docs" icon="document" */>}}
-  {{</* card link="/projects/" title="Projects" subtitle="See project pages." icon="folder" */>}}
+  {{</* card link="https://github.com/gohugoio/hugo" title="Hugo repo" subtitle="Auto favicon icon" icon="favicon" */>}}
   {{</* card link="/" title="Image card" subtitle="Remote image" image="https://images.unsplash.com/photo-1482192597420-48125ceb31b8?auto=format&fit=crop&w=1200&q=80" */>}}
 {{</* /cards */>}}
 
@@ -82,7 +82,7 @@ Remember to rebuild your site after changing markup config.
 
 {{< cards cols="2" >}}
   {{< card link="/posts/" title="Docs" icon="file" >}}
-  {{< card link="/projects/" title="Projects" subtitle="See project pages." icon="folder" >}}
+  {{< card link="https://github.com/gohugoio/hugo" title="Hugo repo" subtitle="Auto favicon icon" icon="favicon" >}}
   {{< card link="/" title="Image card" subtitle="Remote image" image="https://images.unsplash.com/photo-1482192597420-48125ceb31b8?auto=format&fit=crop&w=1200&q=80" >}}
 {{< /cards >}}
 
@@ -108,6 +108,11 @@ Initialize your site.
 ### Step 2
 Add the theme and start writing.
 {{</* /steps */>}}
+
+{{</* steps exclude="true" */>}}
+### Optional details
+This step block is intentionally excluded from the ToC.
+{{</* /steps */>}}
 ```
 
 {{< steps >}}
@@ -116,4 +121,9 @@ Initialize your site.
 
 ### Step 2
 Add the theme and start writing.
+{{< /steps >}}
+
+{{< steps exclude="true" >}}
+### Optional details
+This step block is intentionally excluded from the ToC.
 {{< /steps >}}

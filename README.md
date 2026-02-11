@@ -129,13 +129,13 @@ Examples:
     title="Hugo"
     description="The world’s fastest framework for building websites."
     url="https://gohugo.io"
-    icon="https://gohugo.io/favicon.ico"
+    icon="favicon"
   >}}
   {{< link
     title="Go"
     description="Build simple, secure, and scalable systems."
     url="https://go.dev"
-    icon="https://go.dev/favicon.ico"
+    icon="sparkles"
   >}}
 {{< /links >}}
 
@@ -149,7 +149,7 @@ Remember to rebuild your site after changing markup config.
 
 {{< cards cols="2" >}}
   {{< card link="/posts/" title="Docs" icon="file" >}}
-  {{< card link="/projects/" title="Projects" subtitle="See project pages." icon="folder" >}}
+  {{< card link="https://github.com/gohugoio/hugo" title="Hugo repo" subtitle="Auto favicon icon" icon="favicon" >}}
   {{< card link="/" title="Image card" subtitle="Remote image" image="https://images.unsplash.com/photo-1482192597420-48125ceb31b8?auto=format&fit=crop&w=1200&q=80" >}}
 {{< /cards >}}
 
@@ -175,6 +175,11 @@ Initialize your site.
 ### Step 2
 Add the theme and start writing.
 {{< /steps >}}
+
+{{< steps exclude="true" >}}
+### Hidden from ToC
+Use this when you want step headings but do not want them listed in the table of contents.
+{{< /steps >}}
 ```
 
 Notes:
@@ -182,6 +187,8 @@ Notes:
 - Hugo built-in shortcodes such as `youtube`, `gist`, and `figure` remain available.
 - Provider-specific shortcodes like bilibili/tencent are not included in papercut.
 - `card` supports `image`, `imageAlt`, `imageStyle`, `method`, and `options` for Hextra-style image cards.
+- `card` and `link` support `icon="favicon"` to auto-fetch a favicon from external URLs (with fallback to `<site>/favicon.ico`), built-in icons (for example `icon="folder"`), and direct icon image URLs/paths.
+- `steps` headings are included in the on-page ToC by default; set `exclude="true"` to skip a specific steps block.
 
 ## Built-in layouts
 

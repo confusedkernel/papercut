@@ -20,15 +20,52 @@
   {{- $displayHost = replaceRE "^https?://([^/]+).*$" "$1" $url -}}
 {{- end -}}
 
+{{- $iconValue := strings.TrimSpace $icon -}}
+{{- $iconLower := lower $iconValue -}}
+{{- $iconIsFavicon := eq $iconLower "favicon" -}}
+{{- $iconIsExternal := or (hasPrefix $iconValue "http://") (hasPrefix $iconValue "https://") -}}
+{{- $iconIsAbsolute := hasPrefix $iconValue "/" -}}
+{{- $iconIsData := hasPrefix $iconValue "data:" -}}
+{{- $iconLooksLikeFile := gt (len (findRE "\\.(svg|png|jpe?g|webp|gif|ico)(\\?.*)?$" $iconLower)) 0 -}}
+{{- $iconIsRelativePath := and (not $iconIsExternal) (not $iconIsAbsolute) (not $iconIsData) (or (hasPrefix $iconValue "./") (hasPrefix $iconValue "../") (gt (len (findRE "/" $iconValue)) 0) $iconLooksLikeFile) -}}
+{{- $iconImageSrc := "" -}}
+{{- $iconFallbackSrc := "" -}}
+{{- if and $iconIsFavicon (or (hasPrefix $url "http://") (hasPrefix $url "https://")) -}}
+  {{- $host := replaceRE "^https?://([^/:?#]+).*$" "$1" $url -}}
+  {{- $origin := replaceRE "^(https?://[^/?#]+).*$" "$1" $url -}}
+  {{- if and $origin (ne $origin $url) -}}
+    {{- $iconFallbackSrc = printf "%s/favicon.ico" $origin -}}
+  {{- end -}}
+  {{- if and $host (ne $host $url) -}}
+    {{- $iconImageSrc = printf "https://www.google.com/s2/favicons?domain=%s&sz=64" ($host | urlquery) -}}
+  {{- end -}}
+{{- else if or $iconIsExternal $iconIsAbsolute $iconIsData $iconIsRelativePath -}}
+  {{- if $iconIsExternal -}}
+    {{- $iconImageSrc = $iconValue -}}
+  {{- else -}}
+    {{- $iconImageSrc = $iconValue | relURL -}}
+  {{- end -}}
+{{- end -}}
+{{- $iconName := "" -}}
+{{- if and (eq $iconImageSrc "") (ne $iconValue "") (not $iconIsFavicon) -}}
+  {{- $iconName = $iconValue -}}
+{{- end -}}
+{{- $iconFallbackAttr := "" -}}
+{{- with $iconFallbackSrc -}}
+  {{- $iconFallbackAttr = printf "onerror=%q" (printf "if(!this.dataset.faviconFallbackTried){this.dataset.faviconFallbackTried='1';this.src='%s';}" .) -}}
+{{- end -}}
+
 <a
   class="sc-link-card"
   href="{{ $url }}"
   target="{{ $target }}"
   {{- with $rel }} rel="{{ . }}"{{ end -}}
 >
-  <span class="sc-link-card__media{{ if $icon }} sc-link-card__media--image{{ end }}" aria-hidden="true">
-    {{- if $icon -}}
-      <img src="{{ $icon }}" alt="" loading="lazy" />
+  <span class="sc-link-card__media{{ if $iconImageSrc }} sc-link-card__media--image{{ end }}" aria-hidden="true">
+    {{- if $iconImageSrc -}}
+      <img src="{{ $iconImageSrc }}" alt="" loading="lazy" {{ with $iconFallbackAttr }}{{ . | safeHTMLAttr }}{{ end }} />
+    {{- else if $iconName -}}
+      {{ partial "shortcode-icon.html" (dict "name" $iconName "class" "sc-link-card__icon" "size" "1.15rem") }}
     {{- else -}}
       {{ partial "shortcode-icon.html" (dict "name" "link" "class" "sc-link-card__icon" "size" "1.15rem") }}
     {{- end -}}
