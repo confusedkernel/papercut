@@ -9,13 +9,80 @@
   {{ end }}
 </title>
 
-{{ with .Site.Params.description }}
+{{ $metaDescription := .Params.description | default .Site.Params.description }}
+{{ with $metaDescription }}
   <meta name="description" content="{{ . }}" />
+{{ end }}
+
+{{ $metaImage := .Params.image | default "" }}
+{{ if not $metaImage }}
+  {{ with .Params.images }}
+    {{ if reflect.IsSlice . }}
+      {{ if gt (len .) 0 }}
+        {{ $metaImage = index . 0 }}
+      {{ end }}
+    {{ else }}
+      {{ $metaImage = . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ if not $metaImage }}
+  {{ $metaImage = .Params.cover | default "" }}
+{{ end }}
+{{ if not $metaImage }}
+  {{ $metaImage = .Site.Params.fallbackImage | default .Site.Params.fallback_image | default "/images/papercut-fallback.svg" }}
+{{ end }}
+{{ $metaImageURL := "" }}
+{{ with $metaImage }}
+  {{ if or (hasPrefix . "http://") (hasPrefix . "https://") (hasPrefix . "data:") }}
+    {{ $metaImageURL = . }}
+  {{ else }}
+    {{ $metaImageURL = . | absURL }}
+  {{ end }}
+{{ end }}
+
+<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}" />
+{{ with $metaDescription }}
+  <meta property="og:description" content="{{ . }}" />
+{{ end }}
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+{{ with $metaImageURL }}
+  <meta property="og:image" content="{{ . }}" />
+  <meta name="twitter:image" content="{{ . }}" />
+{{ end }}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}" />
+{{ with $metaDescription }}
+  <meta name="twitter:description" content="{{ . }}" />
 {{ end }}
 
 {{ with .Site.Params.favicon }}
   <link rel="icon" href="{{ . | relURL }}" />
 {{ end }}
+
+{{ with .OutputFormats.Get "RSS" }}
+  <link rel="alternate" type="{{ .MediaType.Type }}" title="{{ $.Site.Title }}" href="{{ .RelPermalink }}" />
+{{ else }}
+  {{ with .Site.Home.OutputFormats.Get "RSS" }}
+    <link rel="alternate" type="{{ .MediaType.Type }}" title="{{ $.Site.Title }}" href="{{ .RelPermalink }}" />
+  {{ end }}
+{{ end }}
+
+{{ $latteChroma := resources.Get "css/latte-chroma-style.css" }}
+{{ $mochaChroma := resources.Get "css/mocha-chroma-style.css" }}
+{{ $tailwindCSS := resources.Get "css/tailwind.css" }}
+{{ $themeCSS := slice
+  (resources.Get "css/theme/base.css")
+  (resources.Get "css/theme/media.css")
+  (resources.Get "css/theme/prose.css")
+  (resources.Get "css/theme/chrome.css")
+  (resources.Get "css/theme/shortcodes-core.css")
+  (resources.Get "css/theme/shortcodes-panels.css")
+  (resources.Get "css/theme/shortcodes-steps.css")
+  (resources.Get "css/theme/toc-timeline.css")
+  | resources.Concat "css/theme.css"
+}}
 
 <script>
   (function () {
@@ -47,9 +114,9 @@
 <link
   id="chroma-theme"
   rel="stylesheet"
-  data-light-href="{{ "css/latte-chroma-style.css" | relURL }}"
-  data-dark-href="{{ "css/mocha-chroma-style.css" | relURL }}"
-  href="{{ "css/latte-chroma-style.css" | relURL }}"
+  data-light-href="{{ if $latteChroma }}{{ $latteChroma.RelPermalink }}{{ else }}{{ "css/latte-chroma-style.css" | relURL }}{{ end }}"
+  data-dark-href="{{ if $mochaChroma }}{{ $mochaChroma.RelPermalink }}{{ else }}{{ "css/mocha-chroma-style.css" | relURL }}{{ end }}"
+  href="{{ if $latteChroma }}{{ $latteChroma.RelPermalink }}{{ else }}{{ "css/latte-chroma-style.css" | relURL }}{{ end }}"
 />
-<link rel="stylesheet" href="{{ "css/tailwind.css" | relURL }}" />
-<link rel="stylesheet" href="{{ "css/theme.css" | relURL }}" />
+<link rel="stylesheet" href="{{ if $tailwindCSS }}{{ $tailwindCSS.RelPermalink }}{{ else }}{{ "css/tailwind.css" | relURL }}{{ end }}" />
+<link rel="stylesheet" href="{{ $themeCSS.RelPermalink }}" />

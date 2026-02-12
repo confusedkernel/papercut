@@ -7,6 +7,7 @@ themesDir: "../.."
 params:
   tagline: "Documentation and release notes"
   author: "papercut demo"
+  fallbackImage: "/images/papercut-fallback.svg"
   copyright: "© 2026 papercut demo"
   description: "Documentation-first demo site for the papercut Hugo theme."
   avatar: "/images/avatar.svg"

@@ -6,7 +6,7 @@ tags = ["docs", "customization", "css"]
 categories = ["reference"]
 +++
 
-Most visual customization lives in `static/css/theme.css`.
+Most visual customization lives in `assets/css/theme/*.css`.
 
 ## Core design tokens
 

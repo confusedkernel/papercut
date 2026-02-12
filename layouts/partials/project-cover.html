@@ -1,9 +1,14 @@
-{{- with .Params.cover -}}
+{{- $cover := .Params.cover | default (.Site.Params.fallbackImage | default .Site.Params.fallback_image | default "/images/papercut-fallback.svg") -}}
+{{- with $cover -}}
   {{- $scale := $.Params.coverScale | default $.Params.cover_scale | default 1 -}}
   {{- $offsetX := $.Params.coverOffsetX | default $.Params.cover_offset_x | default "50%" -}}
   {{- $offsetY := $.Params.coverOffsetY | default $.Params.cover_offset_y | default "50%" -}}
   {{- $style := printf "style=\"--project-cover-scale:%v;--project-cover-offset-x:%v;--project-cover-offset-y:%v;\"" $scale $offsetX $offsetY -}}
+  {{- $src := . -}}
+  {{- if not (or (hasPrefix $src "http://") (hasPrefix $src "https://") (hasPrefix $src "data:")) -}}
+    {{- $src = $src | relURL -}}
+  {{- end -}}
   <div class="project-cover-frame">
-    <img class="project-cover-image" src="{{ . | relURL }}" alt="" {{ $style | safeHTMLAttr }} />
+    <img class="project-cover-image" src="{{ $src }}" alt="" {{ $style | safeHTMLAttr }} />
   </div>
 {{- end -}}

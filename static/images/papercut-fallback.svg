@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Papercut Fallback Image</title>
+  <desc id="desc">Minimal monochrome fallback preview image for pages without an explicit image.</desc>
+  <rect width="1200" height="630" fill="#f5f5f5" />
+  <rect x="70" y="70" width="1060" height="490" fill="#fafafa" stroke="#111" stroke-width="2" />
+  <line x1="70" y1="170" x2="1130" y2="170" stroke="#111" stroke-width="2" />
+  <text x="110" y="138" fill="#111" font-family="Space Mono, Courier New, monospace" font-size="38" font-weight="700" letter-spacing="1.2">
+    PAPERCUT
+  </text>
+  <text x="110" y="248" fill="#222" font-family="Iosevka NFM, Space Mono, Courier New, monospace" font-size="36" letter-spacing="0.8">
+    No page image provided.
+  </text>
+  <text x="110" y="304" fill="#444" font-family="Iosevka NFM, Space Mono, Courier New, monospace" font-size="24" letter-spacing="0.5">
+    Using site-level fallback image.
+  </text>
+  <line x1="110" y1="360" x2="1090" y2="360" stroke="#bbb" stroke-width="1" />
+  <text x="110" y="424" fill="#666" font-family="Space Mono, Courier New, monospace" font-size="20" letter-spacing="1.4">
+    Configure with params.fallbackImage in your site config.
+  </text>
+</svg>

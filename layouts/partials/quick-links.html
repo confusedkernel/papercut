@@ -1,6 +1,14 @@
 {{ $categoriesPage := .Site.GetPage "/categories/" }}
 {{ $tagsPage := .Site.GetPage "/tags/" }}
 {{ $archivesPage := .Site.GetPage "/archives/" }}
+{{ $rssURL := "" }}
+{{ with .OutputFormats.Get "RSS" }}
+  {{ $rssURL = .RelPermalink }}
+{{ else }}
+  {{ with .Site.Home.OutputFormats.Get "RSS" }}
+    {{ $rssURL = .RelPermalink }}
+  {{ end }}
+{{ end }}
 {{ $quickLinks := slice }}
 {{ with $categoriesPage }}
   {{ $quickLinks = $quickLinks | append (dict "label" "categories" "url" .RelPermalink) }}
@@ -10,6 +18,9 @@
 {{ end }}
 {{ with $archivesPage }}
   {{ $quickLinks = $quickLinks | append (dict "label" "archives" "url" .RelPermalink) }}
+{{ end }}
+{{ with $rssURL }}
+  {{ $quickLinks = $quickLinks | append (dict "label" "rss" "url" .) }}
 {{ end }}
 {{ if gt (len $quickLinks) 0 }}
   <section class="border-t border-[var(--border)] pt-5 text-center">

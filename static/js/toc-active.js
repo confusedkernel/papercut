@@ -126,6 +126,70 @@
     return;
   }
 
+  var lastActiveLink = null;
+
+  function findScrollableAncestor(element) {
+    var node = element ? element.parentElement : null;
+    while (node && node !== document.body) {
+      var style = window.getComputedStyle(node);
+      var overflowY = style.overflowY;
+      var canScrollY = overflowY === "auto" || overflowY === "scroll";
+
+      if (canScrollY && node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+
+      node = node.parentElement;
+    }
+
+    return null;
+  }
+
+  function scrollActiveIntoView(activeLink) {
+    if (!activeLink) {
+      return;
+    }
+
+    var container = findScrollableAncestor(activeLink);
+    if (!container) {
+      return;
+    }
+
+    var containerRect = container.getBoundingClientRect();
+    var linkRect = activeLink.getBoundingClientRect();
+    var padding = 14;
+    var hiddenAbove = linkRect.top < containerRect.top + padding;
+    var hiddenBelow = linkRect.bottom > containerRect.bottom - padding;
+
+    if (!hiddenAbove && !hiddenBelow) {
+      return;
+    }
+
+    var targetTop =
+      container.scrollTop +
+      (linkRect.top - containerRect.top) -
+      container.clientHeight / 2 +
+      linkRect.height / 2;
+    var maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+    targetTop = Math.max(0, Math.min(targetTop, maxScrollTop));
+
+    var behavior = "smooth";
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      behavior = "auto";
+    }
+
+    if (typeof container.scrollTo === "function") {
+      try {
+        container.scrollTo({ top: targetTop, behavior: behavior });
+        return;
+      } catch (error) {
+        // ignore and fallback to direct assignment for older browsers
+      }
+    }
+
+    container.scrollTop = targetTop;
+  }
+
   function setActive(activeLink) {
     links.forEach(function (link) {
       var isActive = link === activeLink;
@@ -136,6 +200,11 @@
         link.removeAttribute("aria-current");
       }
     });
+
+    if (activeLink !== lastActiveLink) {
+      scrollActiveIntoView(activeLink);
+      lastActiveLink = activeLink;
+    }
   }
 
   function findActiveByScroll() {

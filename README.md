@@ -18,6 +18,7 @@ theme = "papercut"
 [params]
   tagline = "This is an example tagline"
   author = "papercut"
+  fallbackImage = "/images/papercut-fallback.svg"
 
 [menu]
   [[menu.main]]
@@ -58,6 +59,7 @@ hugo new posts/hello-world.md
 - `params.tagline`: short line under the site title on the home page
 - `params.author`: used in the footer
 - `params.avatar`: path to a square avatar image
+- `params.fallbackImage`: site-wide fallback image for social previews and project covers (default `/images/papercut-fallback.svg`; `fallback_image` also works)
 - `params.announcement`: optional announcement block on the home page
 - `params.social`: list of social links (name, url)
 - `params.copyright`: custom footer copyright text
@@ -81,6 +83,7 @@ coverOffsetX = "50%"
 - `coverScale`: zoom amount (default `1`)
 - `coverOffsetY`: vertical focal offset (accepts CSS lengths/percentages, e.g. `"12px"`, `"55%"`)
 - `coverOffsetX`: horizontal focal offset (default `"50%"`)
+- When `cover` is not set, papercut uses `params.fallbackImage` (or `/images/papercut-fallback.svg`)
 - Snake case variants are also supported: `cover_scale`, `cover_offset_y`, `cover_offset_x`
 
 ## Code blocks and syntax highlighting
@@ -98,8 +101,10 @@ npm run build:css
 
 Useful commands:
 
-- `npm run build:css`: production build (Tailwind + Autoprefixer + cssnano) to `static/css/tailwind.css`
+- `npm run build:css`: production build (Tailwind + Autoprefixer + cssnano) to `assets/css/tailwind.css`
 - `npm run watch:css`: development watch build while editing layouts/templates
+
+Theme styles are split into component files in `assets/css/theme/*.css` and concatenated to `/css/theme.css` at build time.
 
 When working on theme markup/classes, run Tailwind build before `hugo -s exampleSite`.
 
@@ -196,6 +201,7 @@ Notes:
 - Section list pages
 - Single post pages
 - Taxonomy list and term pages
+- RSS feed link in quick links (when RSS output is enabled)
 - 404 page
 
 ## Deploy the demo to GitHub Pages
