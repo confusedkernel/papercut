@@ -4,29 +4,7 @@
     {{ $taxonomyName = lower .Title }}
   {{ end }}
 
-  {{ $normalizedCounts := dict }}
-  {{ if ne $taxonomyName "" }}
-    {{ range .Site.RegularPages }}
-      {{ $page := . }}
-      {{ $rawTerms := $page.Param $taxonomyName }}
-      {{ $terms := slice }}
-      {{ if reflect.IsSlice $rawTerms }}
-        {{ $terms = $rawTerms }}
-      {{ else if $rawTerms }}
-        {{ $terms = slice $rawTerms }}
-      {{ end }}
-
-      {{ $seenOnPage := dict }}
-      {{ range $terms }}
-        {{ $termKey := lower (strings.TrimSpace (printf "%v" .)) }}
-        {{ if and (ne $termKey "") (not (index $seenOnPage $termKey)) }}
-          {{ $seenOnPage = merge $seenOnPage (dict $termKey true) }}
-          {{ $current := index $normalizedCounts $termKey | default 0 }}
-          {{ $normalizedCounts = merge $normalizedCounts (dict $termKey (add $current 1)) }}
-        {{ end }}
-      {{ end }}
-    {{ end }}
-  {{ end }}
+  {{ $normalizedCounts := partial "taxonomy-counts.html" (dict "taxonomyName" $taxonomyName "site" .Site) }}
 
   <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_14px_24px_-18px_rgba(0,0,0,0.35)] sm:p-6">
     <nav aria-label="Breadcrumb" class="text-sm uppercase tracking-[0.08em] text-[var(--muted)]">

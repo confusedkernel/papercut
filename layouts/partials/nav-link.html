@@ -1,0 +1,10 @@
+{{ $isActive := or (eq .current .target) (and (ne .target "/") (hasPrefix .current .target)) }}
+<li>
+  <a
+    class="transition-colors {{ if $isActive }}font-bold text-[var(--fg)]{{ else }}font-normal text-[var(--muted)] hover:font-bold hover:text-[var(--fg)]{{ end }}"
+    href="{{ .target }}"
+    {{ if $isActive }}aria-current="page"{{ end }}
+  >
+    {{ .name }}
+  </a>
+</li>

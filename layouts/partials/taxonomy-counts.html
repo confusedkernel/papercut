@@ -1,0 +1,26 @@
+{{- $taxonomyName := .taxonomyName -}}
+{{- $site := .site -}}
+{{- $normalizedCounts := dict -}}
+{{- if ne $taxonomyName "" -}}
+  {{- range $site.RegularPages -}}
+    {{- $page := . -}}
+    {{- $rawTerms := $page.Param $taxonomyName -}}
+    {{- $terms := slice -}}
+    {{- if reflect.IsSlice $rawTerms -}}
+      {{- $terms = $rawTerms -}}
+    {{- else if $rawTerms -}}
+      {{- $terms = slice $rawTerms -}}
+    {{- end -}}
+
+    {{- $seenOnPage := dict -}}
+    {{- range $terms -}}
+      {{- $termKey := lower (strings.TrimSpace (printf "%v" .)) -}}
+      {{- if and (ne $termKey "") (not (index $seenOnPage $termKey)) -}}
+        {{- $seenOnPage = merge $seenOnPage (dict $termKey true) -}}
+        {{- $current := index $normalizedCounts $termKey | default 0 -}}
+        {{- $normalizedCounts = merge $normalizedCounts (dict $termKey (add $current 1)) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $normalizedCounts -}}

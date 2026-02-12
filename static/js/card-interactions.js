@@ -24,10 +24,7 @@
     card.setAttribute("data-card-nav-ready", "true");
   }
 
-  function hasSelection() {
-    var selected = window.getSelection ? window.getSelection().toString() : "";
-    return selected && selected.trim().length > 0;
-  }
+  var hasSelection = window.__papercut.hasSelection;
 
   function navigate(card) {
     var href = card.getAttribute("data-card-href");

@@ -1,0 +1,42 @@
+{{ $page := .page }}
+{{ $aboutAvatar := .aboutAvatar }}
+{{ $aboutAvatarAlt := .aboutAvatarAlt }}
+<article class="post-shell border border-[var(--border)] bg-[var(--bg-alt)] p-6">
+  <header class="flex flex-col gap-3{{ if $aboutAvatar }} has-about-avatar{{ end }}">
+    {{ if $page.Date.IsZero }}
+      <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">{{ $page.Section | title }}</p>
+    {{ else }}
+      <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">
+        <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format "Jan 2, 2006" }}</time>
+        {{ with $page.ReadingTime }}
+          <span class="px-2">·</span>
+          <span>{{ . }} min read</span>
+        {{ end }}
+      </p>
+    {{ end }}
+    <h1 class="text-2xl sm:text-3xl">{{ $page.Title }}</h1>
+    {{ with $aboutAvatar }}
+      <figure class="about-avatar">
+        <img class="about-avatar__image" src="{{ . | safeURL }}" alt="{{ $aboutAvatarAlt }}" loading="lazy" />
+      </figure>
+    {{ end }}
+    {{ with $page.Params.description }}
+      <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</p>
+    {{ end }}
+    {{ with $page.Params.tags }}
+      <ul class="flex flex-wrap gap-2 text-[0.7rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+        {{ range . }}
+          <li>
+            <a class="index-hover border border-[var(--border)] px-2 py-1" href="{{ "tags/" | relURL }}{{ . | urlize }}/">
+              #{{ . }}
+            </a>
+          </li>
+        {{ end }}
+      </ul>
+    {{ end }}
+  </header>
+
+  <div class="post-content mt-6">
+    {{ $page.Content }}
+  </div>
+</article>

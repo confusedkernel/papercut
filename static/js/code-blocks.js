@@ -14,25 +14,24 @@
     return "TEXT";
   }
 
+  function flashButton(button, state, text, label) {
+    button.dataset.state = state;
+    button.textContent = text;
+    setTimeout(function () {
+      button.dataset.state = "idle";
+      button.textContent = label;
+    }, 2000);
+  }
+
   function copyCode(codeNode, button, label) {
     var text = codeNode.textContent || "";
     navigator.clipboard
       .writeText(text)
       .then(function () {
-        button.dataset.state = "copied";
-        button.textContent = "COPIED";
-        setTimeout(function () {
-          button.dataset.state = "idle";
-          button.textContent = label;
-        }, 2000);
+        flashButton(button, "copied", "COPIED", label);
       })
       .catch(function () {
-        button.dataset.state = "error";
-        button.textContent = "ERROR";
-        setTimeout(function () {
-          button.dataset.state = "idle";
-          button.textContent = label;
-        }, 2000);
+        flashButton(button, "error", "ERROR", label);
       });
   }
 

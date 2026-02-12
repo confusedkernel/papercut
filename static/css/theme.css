@@ -85,21 +85,6 @@
 
 html[data-theme="light"] {
   color-scheme: light;
-  --bg: #f9f9f9;
-  --bg-alt: #ffffff;
-  --fg: #000000;
-  --muted: #111111;
-  --border: #000000;
-  --hover-bg: #efefef;
-  --inline-code-bg: #f6f6f6;
-  --inline-link: #1a1a1a;
-  --inline-link-hover: #252525;
-  --header-title: #101010;
-  --header-title-hover: #5a5a5a;
-  --header-drop-shadow: rgba(0, 0, 0, 0.14);
-  --post-shell-shadow: 0 14px 24px -18px rgba(0, 0, 0, 0.35);
-  --card-base-shadow: 0 12px 20px -16px rgba(0, 0, 0, 0.34);
-  --card-hover-shadow: 0 18px 28px -14px rgba(0, 0, 0, 0.38);
 }
 
 html[data-theme="dark"] {
@@ -931,19 +916,24 @@ img {
   z-index: -1;
 }
 
-.sc-links {
+.sc-links,
+.sc-cards {
   display: grid;
   gap: 0.8rem;
   margin: 1rem 0;
 }
 
-.sc-links--1 {
+.sc-links--1,
+.sc-cards--1 {
   grid-template-columns: 1fr;
 }
 
 .sc-links--2,
 .sc-links--3,
-.sc-links--4 {
+.sc-links--4,
+.sc-cards--2,
+.sc-cards--3,
+.sc-cards--4 {
   grid-template-columns: 1fr;
 }
 
@@ -954,17 +944,22 @@ img {
 @media (min-width: 640px) {
   .sc-links--2,
   .sc-links--3,
-  .sc-links--4 {
+  .sc-links--4,
+  .sc-cards--2,
+  .sc-cards--3,
+  .sc-cards--4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
-  .sc-links--3 {
+  .sc-links--3,
+  .sc-cards--3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .sc-links--4 {
+  .sc-links--4,
+  .sc-cards--4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
@@ -1125,40 +1120,6 @@ img {
 .sc-callout--danger,
 .sc-notice--danger {
   --sc-accent: #d06161;
-}
-
-.sc-cards {
-  display: grid;
-  gap: 0.8rem;
-  margin: 1rem 0;
-}
-
-.sc-cards--1 {
-  grid-template-columns: 1fr;
-}
-
-.sc-cards--2,
-.sc-cards--3,
-.sc-cards--4 {
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-  .sc-cards--2,
-  .sc-cards--3,
-  .sc-cards--4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .sc-cards--3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .sc-cards--4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 .sc-card {

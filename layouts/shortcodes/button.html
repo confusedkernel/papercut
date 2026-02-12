@@ -8,18 +8,9 @@
 {{- if not (in (slice "sm" "md" "lg") $size) -}}
   {{- $size = "md" -}}
 {{- end -}}
-{{- $target := .Get "target" | default "" -}}
-{{- if eq $target "" -}}
-  {{- if or (hasPrefix $url "http://") (hasPrefix $url "https://") -}}
-    {{- $target = "_blank" -}}
-  {{- else -}}
-    {{- $target = "_self" -}}
-  {{- end -}}
-{{- end -}}
-{{- $rel := .Get "rel" | default "" -}}
-{{- if and (eq $target "_blank") (eq $rel "") -}}
-  {{- $rel = "noopener noreferrer" -}}
-{{- end -}}
+{{- $linkAttrs := partial "link-attrs.html" (dict "url" $url "target" (.Get "target" | default "") "rel" (.Get "rel" | default "")) -}}
+{{- $target := $linkAttrs.target -}}
+{{- $rel := $linkAttrs.rel -}}
 {{- $icon := .Get "icon" | default "" -}}
 
 <a

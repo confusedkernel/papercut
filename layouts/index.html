@@ -126,27 +126,5 @@
     </section>
   {{ end }}
 
-  {{ $categoriesPage := .Site.GetPage "/categories/" }}
-  {{ $tagsPage := .Site.GetPage "/tags/" }}
-  {{ $archivesPage := .Site.GetPage "/archives/" }}
-  {{ $quickLinks := slice }}
-  {{ with $categoriesPage }}
-    {{ $quickLinks = $quickLinks | append (dict "label" "categories" "url" .RelPermalink) }}
-  {{ end }}
-  {{ with $tagsPage }}
-    {{ $quickLinks = $quickLinks | append (dict "label" "tags" "url" .RelPermalink) }}
-  {{ end }}
-  {{ with $archivesPage }}
-    {{ $quickLinks = $quickLinks | append (dict "label" "archives" "url" .RelPermalink) }}
-  {{ end }}
-  {{ if gt (len $quickLinks) 0 }}
-    <section class="border-t border-[var(--border)] pt-5 text-center">
-      <nav aria-label="Browse taxonomy links" class="text-sm tracking-[0.08em] text-[var(--muted)]">
-        {{ range $index, $item := $quickLinks }}
-          {{ if gt $index 0 }}<span class="px-1.5">/</span>{{ end }}
-          <a class="underline-offset-4 transition-colors hover:text-[var(--fg)] hover:underline" href="{{ $item.url }}">{{ $item.label }}</a>
-        {{ end }}
-      </nav>
-    </section>
-  {{ end }}
+  {{ partial "quick-links.html" . }}
 {{ end }}

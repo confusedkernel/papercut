@@ -1,0 +1,14 @@
+{{- $url := .url -}}
+{{- $target := .target | default "" -}}
+{{- if eq $target "" -}}
+  {{- if or (hasPrefix $url "http://") (hasPrefix $url "https://") -}}
+    {{- $target = "_blank" -}}
+  {{- else -}}
+    {{- $target = "_self" -}}
+  {{- end -}}
+{{- end -}}
+{{- $rel := .rel | default "" -}}
+{{- if and (eq $target "_blank") (eq $rel "") -}}
+  {{- $rel = "noopener noreferrer" -}}
+{{- end -}}
+{{- return (dict "target" $target "rel" $rel) -}}

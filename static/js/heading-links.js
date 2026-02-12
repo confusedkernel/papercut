@@ -7,10 +7,7 @@
     return;
   }
 
-  function hasSelection() {
-    var selection = window.getSelection ? window.getSelection() : null;
-    return Boolean(selection && String(selection).trim());
-  }
+  var hasSelection = window.__papercut.hasSelection;
 
   function goToHeading(heading) {
     var id = heading.id;

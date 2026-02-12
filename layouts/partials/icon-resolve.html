@@ -1,0 +1,37 @@
+{{- $icon := .icon | default "" -}}
+{{- $url := .url | default "" -}}
+{{- $iconValue := strings.TrimSpace $icon -}}
+{{- $iconLower := lower $iconValue -}}
+{{- $iconIsFavicon := eq $iconLower "favicon" -}}
+{{- $iconIsExternal := or (hasPrefix $iconValue "http://") (hasPrefix $iconValue "https://") -}}
+{{- $iconIsAbsolute := hasPrefix $iconValue "/" -}}
+{{- $iconIsData := hasPrefix $iconValue "data:" -}}
+{{- $iconLooksLikeFile := gt (len (findRE "\\.(svg|png|jpe?g|webp|gif|ico)(\\?.*)?$" $iconLower)) 0 -}}
+{{- $iconIsRelativePath := and (not $iconIsExternal) (not $iconIsAbsolute) (not $iconIsData) (or (hasPrefix $iconValue "./") (hasPrefix $iconValue "../") (gt (len (findRE "/" $iconValue)) 0) $iconLooksLikeFile) -}}
+{{- $iconImageSrc := "" -}}
+{{- $iconFallbackSrc := "" -}}
+{{- if and $iconIsFavicon (or (hasPrefix $url "http://") (hasPrefix $url "https://")) -}}
+  {{- $host := replaceRE "^https?://([^/:?#]+).*$" "$1" $url -}}
+  {{- $origin := replaceRE "^(https?://[^/?#]+).*$" "$1" $url -}}
+  {{- if and $origin (ne $origin $url) -}}
+    {{- $iconFallbackSrc = printf "%s/favicon.ico" $origin -}}
+  {{- end -}}
+  {{- if and $host (ne $host $url) -}}
+    {{- $iconImageSrc = printf "https://www.google.com/s2/favicons?domain=%s&sz=64" ($host | urlquery) -}}
+  {{- end -}}
+{{- else if or $iconIsExternal $iconIsAbsolute $iconIsData $iconIsRelativePath -}}
+  {{- if $iconIsExternal -}}
+    {{- $iconImageSrc = $iconValue -}}
+  {{- else -}}
+    {{- $iconImageSrc = $iconValue | relURL -}}
+  {{- end -}}
+{{- end -}}
+{{- $iconName := "" -}}
+{{- if and (eq $iconImageSrc "") (ne $iconValue "") (not $iconIsFavicon) -}}
+  {{- $iconName = $iconValue -}}
+{{- end -}}
+{{- $iconFallbackAttr := "" -}}
+{{- with $iconFallbackSrc -}}
+  {{- $iconFallbackAttr = printf "onerror=%q" (printf "if(!this.dataset.faviconFallbackTried){this.dataset.faviconFallbackTried='1';this.src='%s';}" .) -}}
+{{- end -}}
+{{- return (dict "iconImageSrc" $iconImageSrc "iconName" $iconName "iconFallbackAttr" $iconFallbackAttr) -}}
