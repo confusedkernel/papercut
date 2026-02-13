@@ -1,0 +1,13 @@
+{{- $src := .Get "src" -}}
+{{- if $src -}}
+  {{- $link := .Get "link" -}}
+  {{- if $link -}}<a href="{{ $link | safeURL }}">{{- end -}}
+  <img
+    src="{{ $src | safeURL }}"
+    {{- with .Get "alt" }} alt="{{ . | plainify }}"{{ end -}}
+    class="{{ with .Get "position" }}{{ . }}{{ else }}left{{ end }}{{ if eq (.Get "position") "right" }} image-wrapper{{ end }}{{ if in (slice "true" "yes") (.Get "inline") }} inline-image{{ end }}"
+    {{- with .Get "style" }} style="{{ . | safeCSS }}"{{ end -}}
+    {{- with .Get "height" }} height="{{ . }}"{{ end -}}
+    {{- with .Get "width" }} width="{{ . }}"{{ end -}} />
+  {{- if $link -}}</a>{{- end -}}
+{{- end -}}

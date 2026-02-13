@@ -1,6 +1,8 @@
 {{ $page := .page }}
 {{ $aboutAvatar := .aboutAvatar }}
 {{ $aboutAvatarAlt := .aboutAvatarAlt }}
+{{ $isPost := eq $page.Section "posts" }}
+{{ $showLastmod := and $isPost (not $page.Lastmod.IsZero) (ne ($page.Lastmod.Format "2006-01-02") ($page.Date.Format "2006-01-02")) }}
 <article class="post-shell border border-[var(--border)] bg-[var(--bg-alt)] p-6">
   <header class="flex flex-col gap-3{{ if $aboutAvatar }} has-about-avatar{{ end }}">
     {{ if $page.Date.IsZero }}
@@ -11,6 +13,13 @@
         {{ with $page.ReadingTime }}
           <span class="px-2">·</span>
           <span>{{ . }} min read</span>
+        {{ end }}
+        {{ if $showLastmod }}
+          <span class="px-2">·</span>
+          <span>
+            Updated
+            <time datetime="{{ $page.Lastmod.Format "2006-01-02" }}">{{ $page.Lastmod.Format "Jan 2, 2006" }}</time>
+          </span>
         {{ end }}
       </p>
     {{ end }}

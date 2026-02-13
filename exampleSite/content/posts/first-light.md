@@ -1,6 +1,7 @@
 +++
 title = "Quickstart: Install papercut"
 date = 2026-02-10T09:00:00-08:00
+lastmod = 2026-02-11T14:30:00-08:00
 description = "Set up papercut in a fresh Hugo project in a few minutes."
 tags = ["docs", "setup", "quickstart"]
 categories = ["guides"]

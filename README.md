@@ -64,6 +64,10 @@ hugo new posts/hello-world.md
 - `params.social`: list of social links (name, url)
 - `params.copyright`: custom footer copyright text
 
+Post front matter:
+
+- `lastmod`: optional last-updated timestamp for posts; when it differs from `date` (by day), papercut shows an `Updated <date>` label on post cards and single post pages
+
 About page avatar (optional): add this to `content/about/index.md` front matter:
 
 ```toml

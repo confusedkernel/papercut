@@ -1,6 +1,10 @@
 {{ define "main" }}
   {{ $toc := .TableOfContents }}
   {{ $isPost := eq .Section "posts" }}
+  {{ $showToc := true }}
+  {{ if isset .Params "toc" }}
+    {{ $showToc = .Params.toc }}
+  {{ end }}
   {{ $isAboutPage := or (eq .Section "about") (and .File (hasPrefix .File.Path "about/")) }}
   {{ $prev := .PrevInSection }}
   {{ $next := .NextInSection }}
@@ -13,7 +17,7 @@
 
   {{ $articleCtx := dict "page" . "aboutAvatar" $aboutAvatar "aboutAvatarAlt" $aboutAvatarAlt }}
 
-  {{ if and $toc (eq .Section "posts") }}
+  {{ if and $toc $isPost $showToc }}
     <div class="relative">
       <aside class="toc-outside hidden xl:block">
         <div class="toc-outside__panel">

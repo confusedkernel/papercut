@@ -68,6 +68,14 @@
               <time datetime="{{ .Date.Format "2006-01-02" }}">
                 {{ .Date.Format "Jan 2, 2006" }}
               </time>
+              {{ $showLastmod := and (not .Lastmod.IsZero) (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }}
+              {{ if $showLastmod }}
+                <span class="px-2">·</span>
+                <span>
+                  Updated
+                  <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "Jan 2, 2006" }}</time>
+                </span>
+              {{ end }}
             </p>
             <h3 class="text-lg">
               <a class="hover:underline" href="{{ .RelPermalink }}">{{ .Title }}</a>
