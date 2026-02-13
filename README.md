@@ -63,10 +63,11 @@ hugo new posts/hello-world.md
 - `params.announcement`: optional announcement block on the home page
 - `params.social`: list of social links (name, url)
 - `params.copyright`: custom footer copyright text
+- `params.showLastUpdated`: show/hide the `Updated <date>` label on single post pages (default `false`; `show_last_updated` also works)
 
 Post front matter:
 
-- `lastmod`: optional last-updated timestamp for posts; when it differs from `date` (by day), papercut shows an `Updated <date>` label on post cards and single post pages
+- `lastmod`: optional last-updated timestamp for posts; when it differs from `date` (by day), papercut shows an `Updated <date>` label on single post pages
 
 About page avatar (optional): add this to `content/about/index.md` front matter:
 
