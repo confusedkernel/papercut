@@ -98,3 +98,30 @@
   border: 1px solid var(--border);
   background: var(--bg-alt);
 }
+
+.archive-post-link {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.archive-post-link::before {
+  content: attr(data-link-label);
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.archive-post-link__text {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .archive-post-link:hover .archive-post-link__text,
+  .archive-post-link:focus-visible .archive-post-link__text {
+    font-weight: 700;
+  }
+}

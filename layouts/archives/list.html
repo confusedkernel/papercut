@@ -29,7 +29,9 @@
                   </p>
                   <div class="flex flex-col gap-1.5">
                     <h3 class="text-base leading-snug">
-                      <a class="font-normal hover:font-bold" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                      <a class="archive-post-link" data-link-label="{{ .Title }}" href="{{ .RelPermalink }}">
+                        <span class="archive-post-link__text">{{ .Title }}</span>
+                      </a>
                     </h3>
                     {{ with .Params.tags }}
                       <div class="flex flex-wrap gap-1.5 text-[0.65rem] uppercase tracking-[0.08em] text-[var(--muted)]">
