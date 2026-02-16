@@ -38,7 +38,7 @@
       "url" (printf "%s" .RelPermalink)
       "summary" (or .Params.description (.Summary | plainify))
       "section" .Section
-      "date" (.Date.Format "Jan 2, 2006")
+      "date" (.Date.Format "Jan 02, 2006")
       "tags" (delimit (default (slice) .Params.tags) " ")
       "categories" (delimit (default (slice) .Params.categories) " ")
     ) }}

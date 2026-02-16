@@ -16,7 +16,7 @@
       <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">{{ $page.Section | title }}</p>
     {{ else }}
       <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">
-        <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format "Jan 2, 2006" }}</time>
+        <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format "Jan 02, 2006" }}</time>
         {{ with $page.ReadingTime }}
           <span class="px-2">·</span>
           <span>{{ . }} min read</span>
@@ -25,7 +25,7 @@
           <span class="px-2">·</span>
           <span>
             Updated
-            <time datetime="{{ $page.Lastmod.Format "2006-01-02" }}">{{ $page.Lastmod.Format "Jan 2, 2006" }}</time>
+            <time datetime="{{ $page.Lastmod.Format "2006-01-02" }}">{{ $page.Lastmod.Format "Jan 02, 2006" }}</time>
           </span>
         {{ end }}
       </p>

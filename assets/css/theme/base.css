@@ -89,7 +89,7 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #1a1a1a;
+  --bg: rgb(18, 18, 18);
   --bg-alt: #222222;
   --fg: #f1f1f1;
   --muted: #d2d2d2;
@@ -108,7 +108,7 @@ html[data-theme="dark"] {
 
 @media (prefers-color-scheme: dark) {
   html:not([data-theme]) {
-    --bg: #1a1a1a;
+    --bg: rgb(18, 18, 18);
     --bg-alt: #222222;
     --fg: #f1f1f1;
     --muted: #d2d2d2;
