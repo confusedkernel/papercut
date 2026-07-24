@@ -12,6 +12,13 @@ params:
   description: "Documentation-first demo site for the papercut Hugo theme."
   avatar: "/images/avatar.svg"
   announcement: "v0.1.0 docs are live: install guide, customization reference, and deployment notes."
+  search:
+    enable: true
+    type: flexsearch
+    flexsearch:
+      index: content
+      tokenize: forward
+      version: "0.8.143"
   social:
     - name: "GitHub"
       url: "https://github.com/example"

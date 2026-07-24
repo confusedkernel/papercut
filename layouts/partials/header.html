@@ -18,6 +18,16 @@
 {{ end }}
 
 {{ $current := $.RelPermalink }}
+{{ $searchEnabled := true }}
+{{ with .Site.Params.search }}
+  {{ if isset . "enable" }}
+    {{ $searchEnabled = .enable }}
+  {{ end }}
+{{ end }}
+{{ $searchIndex := false }}
+{{ if $searchEnabled }}
+  {{ $searchIndex = partial "search-index-resource.html" .Site }}
+{{ end }}
 
 <header class="site-header sticky top-0 z-50 -mx-4 border-b border-[var(--border)] bg-[var(--bg)] opacity-100 px-4 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
   <div class="relative flex items-center justify-between gap-4">
@@ -32,29 +42,32 @@
     </nav>
 
     <div class="flex items-center gap-3">
-      <form class="search-toggle header-search-desktop" role="search" method="get" action="{{ "search/" | relURL }}" data-search-toggle>
-        <label class="sr-only" for="site-search">Search</label>
-        <button
-          type="button"
-          class="search-toggle__button"
-          data-search-toggle-button
-          aria-label="Open search"
-          aria-expanded="false"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="6.5"></circle>
-            <path d="m16 16 4.5 4.5"></path>
-          </svg>
-        </button>
-        <input
-          id="site-search"
-          name="q"
-          type="search"
-          placeholder="Search"
-          class="search-toggle__input"
-          data-search-toggle-input
-        />
-      </form>
+      {{ if $searchEnabled }}
+        <div class="search-component header-search-desktop" data-search-component data-search-index-url="{{ $searchIndex.RelPermalink }}">
+          <form class="search-toggle" role="search" data-search-form>
+            {{/* Note: aria-label instead of a visually hidden <label> — an absolutely
+                 positioned .sr-only element inside .search-component triggers a WebKit
+                 layout bug that leaves dynamically inserted popover results at 0x0. */}}
+            <button class="search-toggle__button" type="button" data-search-button aria-label="Open search" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5"></circle>
+                <path d="m16 16 4.5 4.5"></path>
+              </svg>
+            </button>
+            <input
+              id="site-search"
+              name="q"
+              type="search"
+              autocomplete="off"
+              placeholder="Search"
+              aria-label="Search titles, content, tags, and categories"
+              class="search-toggle__input"
+              data-search-input
+            />
+          </form>
+          {{ partial "search-panel.html" . }}
+        </div>
+      {{ end }}
 
       <details class="mobile-nav header-mobile-menu relative">
         <summary class="mobile-nav__toggle list-none cursor-pointer p-0" aria-label="Open navigation menu">
@@ -63,16 +76,22 @@
           <span class="mobile-nav__line mobile-nav__line--bottom"></span>
         </summary>
         <div class="mobile-nav__panel absolute right-0 mt-2 w-56 border border-[var(--border)] bg-[var(--bg-alt)] p-3 shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
-          <form class="mb-3" role="search" method="get" action="{{ "search/" | relURL }}">
-            <label class="sr-only" for="site-search-mobile">Search</label>
-            <input
-              id="site-search-mobile"
-              name="q"
-              type="search"
-              placeholder="Search"
-              class="h-8 w-full border border-[var(--border)] bg-[var(--bg)] px-2 text-xs uppercase tracking-[0.08em] text-[var(--fg)] placeholder:text-[var(--muted)] focus:outline-none"
-            />
-          </form>
+          {{ if $searchEnabled }}
+            <div class="search-component mb-3" data-search-component data-search-index-url="{{ $searchIndex.RelPermalink }}">
+              <form class="search-mobile-form" role="search" data-search-form>
+                <input
+                  id="site-search-mobile"
+                  name="q"
+                  type="search"
+                  autocomplete="off"
+                  placeholder="Search"
+                  aria-label="Search titles, content, tags, and categories"
+                  data-search-input
+                />
+              </form>
+              {{ partial "search-panel.html" . }}
+            </div>
+          {{ end }}
 
           <ul class="flex flex-col gap-3 border-t border-[var(--border)] pt-3 text-sm uppercase tracking-[0.08em]">
             {{ range $navItems }}

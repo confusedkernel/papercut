@@ -1,0 +1,14 @@
+{{- $flexsearch := .Params.search.flexsearch -}}
+{{- $indexBy := $flexsearch.index | default "content" | lower -}}
+{{- if not (in (slice "content" "summary" "heading" "title") $indexBy) -}}
+  {{- $indexBy = "content" -}}
+{{- end -}}
+{{- $tokenize := $flexsearch.tokenize | default "forward" | lower -}}
+{{- if not (in (slice "full" "forward" "reverse" "strict") $tokenize) -}}
+  {{- $tokenize = "forward" -}}
+{{- end -}}
+{{- $entries := partialCached "search-entries.html" (dict "site" . "indexBy" $indexBy) .Language.Lang $indexBy -}}
+{{- $payload := dict "entries" $entries "tokenize" $tokenize -}}
+{{- $target := printf "search-index.%s.json" (.Language.Lang | default "en") -}}
+{{- $index := resources.FromString $target ($payload | jsonify) | fingerprint -}}
+{{- return $index -}}

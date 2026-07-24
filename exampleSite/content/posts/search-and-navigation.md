@@ -6,11 +6,11 @@ tags = ["docs", "navigation", "search"]
 categories = ["reference"]
 +++
 
-papercut includes a lightweight client-side search page and section-aware navigation.
+papercut uses FlexSearch for its client-side full-text index and includes section-aware navigation.
 
 ## Header search
 
-Desktop search starts as an icon and expands into an input. Mobile search is inside the menu.
+The desktop icon expands into a search field, while mobile search stays inside the menu. Typing opens real-time results beneath the field. Results are ranked by title, taxonomy, summary, and full page content. Select **Show all results** to open the dedicated page and filter by content type, tag, or category.
 
 ## Taxonomy navigation
 

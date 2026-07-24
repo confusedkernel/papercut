@@ -72,6 +72,27 @@
 {{ $latteChroma := resources.Get "css/latte-chroma-style.css" }}
 {{ $mochaChroma := resources.Get "css/mocha-chroma-style.css" }}
 {{ $tailwindCSS := resources.Get "css/tailwind.css" }}
+{{ $searchCoreJS := resources.Get "js/search-core.js" | fingerprint }}
+{{ $searchToggleJS := resources.Get "js/search-toggle.js" | fingerprint }}
+{{ $searchEnabled := true }}
+{{ with .Site.Params.search }}
+  {{ if isset . "enable" }}
+    {{ $searchEnabled = .enable }}
+  {{ end }}
+{{ end }}
+{{ $flexsearch := .Site.Params.search.flexsearch }}
+{{ $flexsearchVersion := $flexsearch.version | default "0.8.143" }}
+{{ $flexsearchBase := $flexsearch.base | default (printf "https://cdn.jsdelivr.net/npm/flexsearch@%s/dist" $flexsearchVersion) | strings.TrimSuffix "/" }}
+{{ $flexsearchSrc := printf "%s/flexsearch.bundle.min.js" $flexsearchBase }}
+{{ with $flexsearch.js }}
+  {{ if or (hasPrefix . "http://") (hasPrefix . "https://") }}
+    {{ $flexsearchSrc = . }}
+  {{ else if strings.Contains . "/" }}
+    {{ $flexsearchSrc = . | relURL }}
+  {{ else }}
+    {{ $flexsearchSrc = printf "%s/%s" $flexsearchBase . }}
+  {{ end }}
+{{ end }}
 {{ $themeCSS := slice
   (resources.Get "css/theme/base.css")
   (resources.Get "css/theme/media.css")
@@ -82,6 +103,7 @@
   (resources.Get "css/theme/shortcodes-steps.css")
   (resources.Get "css/theme/toc-timeline.css")
   | resources.Concat "css/theme.css"
+  | fingerprint
 }}
 
 <link rel="preload" href="{{ "fonts/SpaceMono-Regular.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
@@ -109,7 +131,11 @@
 <script defer src="{{ "js/utils.js" | relURL }}"></script>
 <script defer src="{{ "js/theme-switcher.js" | relURL }}"></script>
 <script defer src="{{ "js/code-blocks.js" | relURL }}"></script>
-<script defer src="{{ "js/search-toggle.js" | relURL }}"></script>
+{{ if $searchEnabled }}
+  <script defer src="{{ $flexsearchSrc }}"></script>
+  <script defer src="{{ $searchCoreJS.RelPermalink }}"></script>
+  <script defer src="{{ $searchToggleJS.RelPermalink }}"></script>
+{{ end }}
 <script defer src="{{ "js/toc-active.js" | relURL }}"></script>
 <script defer src="{{ "js/heading-links.js" | relURL }}"></script>
 <script defer src="{{ "js/card-interactions.js" | relURL }}"></script>

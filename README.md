@@ -65,6 +65,41 @@ hugo new posts/hello-world.md
 - `params.copyright`: custom footer copyright text
 - `params.showLastUpdated`: show/hide the `Updated <date>` label on single post pages (default `false`; `show_last_updated` also works)
 
+## Search
+
+papercut provides a real-time floating search window and a dedicated search page with type, tag, and category filters. Search is powered by FlexSearch and lazily builds weighted browser indexes for titles, descriptions, page text, sections, tags, and categories.
+
+Configure FlexSearch in `hugo.yaml`:
+
+```yaml
+params:
+  search:
+    enable: true
+    type: flexsearch
+    flexsearch:
+      # content | summary | heading | title
+      index: content
+      # full | forward | reverse | strict
+      tokenize: forward
+      version: "0.8.143"
+```
+
+`content` indexes full page text, `summary` indexes the Hugo summary, `heading` indexes level-one and level-two headings, and `title` omits body text. Titles and taxonomy metadata remain searchable in every mode.
+
+The runtime defaults to `https://cdn.jsdelivr.net/npm/flexsearch@<version>/dist/flexsearch.bundle.min.js`. Set `params.search.flexsearch.base` to use another remote distribution directory, or set `params.search.flexsearch.js` to a complete remote URL or a local path such as `js/vendor/flexsearch.bundle.min.js` under `static/`.
+
+Create `content/search/_index.md` so the dedicated `/search/` route is available:
+
+```toml
++++
+title = "Search"
++++
+
+Search across posts and pages, then narrow the results with filters.
+```
+
+Search URLs are shareable. For example, `/search/?q=hugo&type=posts&tag=docs&category=guides` restores both the query and selected filters. Set `excludeSearch = true` in a page's front matter to omit it from the index. The existing `searchExclude = true` spelling is also supported.
+
 Post front matter:
 
 - `lastmod`: optional last-updated timestamp for posts; when it differs from `date` (by day), papercut shows an `Updated <date>` label on single post pages

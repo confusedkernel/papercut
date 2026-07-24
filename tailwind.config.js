@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./layouts/**/*.html",
+    "./assets/js/**/*.js",
     "./content/**/*.{md,html}",
     "./exampleSite/content/**/*.{md,html}",
     "./static/js/**/*.js",

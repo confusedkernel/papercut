@@ -7,44 +7,76 @@
         <div class="prose-inline-links text-sm leading-relaxed text-[var(--muted)]">{{ . }}</div>
       {{ end }}
 
-      <form id="search-page-form" class="mt-1 flex w-full items-center gap-2" role="search" method="get" action="{{ "search/" | relURL }}">
+      <form id="search-page-form" class="mt-1 flex w-full flex-col gap-3" role="search" method="get" action="{{ "search/" | relURL }}">
         <label class="sr-only" for="search-page-input">Search posts and pages</label>
-        <input
-          id="search-page-input"
-          name="q"
-          type="search"
-          placeholder="Search posts and pages"
-          class="h-9 w-full border border-[var(--border)] bg-[var(--bg)] px-3 text-sm text-[var(--fg)] placeholder:text-[var(--muted)] focus:outline-none"
-        />
-        <button type="submit" class="index-hover h-9 border border-[var(--border)] bg-[var(--bg-alt)] px-3 text-xs uppercase tracking-[0.08em]">
-          Search
-        </button>
+        <div class="flex w-full items-center gap-2">
+          <input
+            id="search-page-input"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder="Search titles, content, tags, and categories"
+            class="h-10 w-full border border-[var(--border)] bg-[var(--bg)] px-3 text-sm text-[var(--fg)] placeholder:text-[var(--muted)] focus:outline-none"
+          />
+          <button
+            type="button"
+            id="search-filter-toggle"
+            class="index-hover search-filter-toggle h-10 shrink-0 border border-[var(--border)] bg-[var(--bg-alt)] px-3"
+            aria-expanded="false"
+            aria-controls="search-filters"
+            aria-label="Toggle search filters"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5.5h16l-6.25 7v5.25l-3.5 1.75v-7L4 5.5Z"></path>
+            </svg>
+          </button>
+          <button type="submit" class="index-hover h-10 shrink-0 border border-[var(--border)] bg-[var(--bg-alt)] px-3 text-xs uppercase tracking-[0.08em]">
+            Search
+          </button>
+        </div>
+
+        <div id="search-filters" class="search-filters flex flex-col gap-3" hidden>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <div class="flex flex-col gap-1 text-[0.68rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+              <span id="search-filter-type-label">Type</span>
+              <select id="search-filter-type" name="type" aria-labelledby="search-filter-type-label" class="search-select h-9 border border-[var(--border)] bg-[var(--bg)] px-2 text-xs text-[var(--fg)] focus:outline-none">
+                <option value="">All types</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1 text-[0.68rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+              <span id="search-filter-tag-label">Tag</span>
+              <select id="search-filter-tag" name="tag" aria-labelledby="search-filter-tag-label" class="search-select h-9 border border-[var(--border)] bg-[var(--bg)] px-2 text-xs text-[var(--fg)] focus:outline-none">
+                <option value="">All tags</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1 text-[0.68rem] uppercase tracking-[0.08em] text-[var(--muted)]">
+              <span id="search-filter-category-label">Category</span>
+              <select id="search-filter-category" name="category" aria-labelledby="search-filter-category-label" class="search-select h-9 border border-[var(--border)] bg-[var(--bg)] px-2 text-xs text-[var(--fg)] focus:outline-none">
+                <option value="">All categories</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="search-clear" type="button" class="self-start text-xs uppercase tracking-[0.08em] underline underline-offset-4">Clear search and filters</button>
+        </div>
       </form>
     </div>
   </section>
 
   <section class="flex flex-col gap-3">
-    <p id="search-count" class="text-xs uppercase tracking-[0.1em] text-[var(--muted)]"></p>
-    <div id="search-results" class="flex flex-col gap-3"></div>
+    <p id="search-count" class="text-xs uppercase tracking-[0.1em] text-[var(--muted)]" aria-live="polite">Loading search index...</p>
+    <div id="search-results" class="flex flex-col gap-4"></div>
     <p id="search-empty" class="hidden text-sm text-[var(--muted)]">No results found. Try a different term.</p>
   </section>
 
-  {{ $pages := where .Site.RegularPages "Section" "ne" "search" }}
-  {{ $searchable := where $pages "Params.searchExclude" "ne" true }}
-  {{ $entries := slice }}
-  {{ range $searchable.ByDate.Reverse }}
-    {{ $entries = $entries | append (dict
-      "title" .Title
-      "url" (printf "%s" .RelPermalink)
-      "summary" (or .Params.description (.Summary | plainify))
-      "section" .Section
-      "date" (.Date.Format "Jan 02, 2006")
-      "tags" (delimit (default (slice) .Params.tags) " ")
-      "categories" (delimit (default (slice) .Params.categories) " ")
-    ) }}
-  {{ end }}
-  <script id="search-data" type="application/json">
-    {{ $entries | jsonify | safeJS }}
-  </script>
-  <script defer src="{{ "js/search-page.js" | relURL }}"></script>
+  {{ $index := partial "search-index-resource.html" .Site }}
+  {{ $searchPageJS := resources.Get "js/search-page.js" | fingerprint }}
+  <div
+    id="search-page"
+    data-search-index-url="{{ $index.RelPermalink }}"
+    data-tags-url="{{ "tags/" | relURL }}"
+    data-categories-url="{{ "categories/" | relURL }}"
+    hidden
+  ></div>
+  <script defer src="{{ $searchPageJS.RelPermalink }}"></script>
 {{ end }}

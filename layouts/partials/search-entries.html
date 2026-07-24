@@ -1,0 +1,30 @@
+{{- $site := .site -}}
+{{- $indexBy := .indexBy -}}
+{{- $pages := where $site.RegularPages "Section" "ne" "search" -}}
+{{- $searchable := where $pages "Params.excludeSearch" "ne" true -}}
+{{- $searchable = where $searchable "Params.searchExclude" "ne" true -}}
+{{- $entries := slice -}}
+{{- range $searchable.ByDate.Reverse -}}
+  {{- $summary := or .Params.description (.Summary | plainify) | htmlUnescape -}}
+  {{- $indexedText := "" -}}
+  {{- if eq $indexBy "content" -}}
+    {{- $indexedText = .Plain | htmlUnescape -}}
+  {{- else if eq $indexBy "summary" -}}
+    {{- $indexedText = $summary -}}
+  {{- else if eq $indexBy "heading" -}}
+    {{- $headings := findRE `(?is)<h[12][^>]*>.*?</h[12]>` .Content -}}
+    {{- $indexedText = delimit $headings " " | plainify | htmlUnescape -}}
+  {{- end -}}
+  {{- $entries = $entries | append (dict
+    "title" .Title
+    "url" (printf "%s" .RelPermalink)
+    "summary" $summary
+    "content" $indexedText
+    "section" (.Section | default "pages")
+    "date" (.Date.Format "Jan 02, 2006")
+    "dateISO" (.Date.Format "2006-01-02")
+    "tags" (default (slice) .Params.tags)
+    "categories" (default (slice) .Params.categories)
+  ) -}}
+{{- end -}}
+{{- return $entries -}}
