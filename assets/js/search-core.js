@@ -207,6 +207,15 @@
     return link;
   }
 
+  /* "blog-posts" -> "Blog Posts"; CSS uppercases it, this keeps copy/paste readable. */
+  function sectionLabel(section) {
+    return String(section || "")
+      .replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\w/g, function (character) { return character.toUpperCase(); });
+  }
+
   function makeTaxonomyLink(value, baseURL, text) {
     var link = document.createElement("a");
     link.className = "index-hover border border-[var(--border)] px-2 py-1";
@@ -225,7 +234,7 @@
     card.setAttribute("data-card-href", entry.url);
 
     var dateColumn = document.createElement("div");
-    dateColumn.className = "text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]";
+    dateColumn.className = "search-result__aside text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]";
     if (entry.date) {
       var time = document.createElement("time");
       if (entry.dateISO) {
@@ -233,6 +242,16 @@
       }
       time.textContent = entry.date;
       dateColumn.appendChild(time);
+    }
+    var label = sectionLabel(entry.section);
+    if (label) {
+      if (dateColumn.firstChild) {
+        dateColumn.appendChild(document.createTextNode(" "));
+      }
+      var type = document.createElement("span");
+      type.className = "search-result__type";
+      type.textContent = label;
+      dateColumn.appendChild(type);
     }
     card.appendChild(dateColumn);
 

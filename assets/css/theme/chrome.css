@@ -338,14 +338,9 @@
   stroke-linejoin: round;
 }
 
-/* Inverted while filters are active, matching the theme's selected states. */
-.search-filter-toggle.is-active,
-.search-filter-toggle.is-active:hover,
-.search-filter-toggle.is-active:focus-visible {
-  background: var(--fg);
-  border-color: var(--fg);
-  color: var(--bg);
-  box-shadow: none;
+/* Filters active: fill the funnel itself rather than inverting the button. */
+.search-filter-toggle.is-active svg {
+  fill: currentColor;
 }
 
 /* Native select chrome replaced with the theme's flat, square boxes. */
@@ -499,6 +494,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+}
+
+/* Full-page result cards: date and section label read as one inline run that
+   wraps mid-phrase only when the column is too narrow. */
+.search-result__aside {
+  line-height: 1.35;
+}
+
+.search-result__type::before {
+  content: "/ ";
 }
 
 .search-result__labels span {
