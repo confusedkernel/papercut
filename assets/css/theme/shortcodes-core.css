@@ -37,6 +37,10 @@
   }
 }
 
+.sc-applemusic {
+  margin: 1.5rem 0;
+}
+
 .sc-icon {
   display: inline-flex;
   vertical-align: middle;

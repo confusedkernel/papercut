@@ -104,6 +104,26 @@ Post front matter:
 
 - `lastmod`: optional last-updated timestamp for posts; when it differs from `date` (by day), papercut shows an `Updated <date>` label on single post pages
 
+## Archives
+
+Create `content/archives/_index.md` for the `/archives/` route. Entries are grouped by year, each year heading shows its entry count, and a jump-to-year nav appears in the header card once there is more than one year.
+
+By default the archive lists the `posts` section, falling back to every section except `search` when there is no `posts` section. Point it at other sections with site config:
+
+```yaml
+params:
+  archives:
+    sections: ["notes", "essays"]
+```
+
+Or per page, in `content/archives/_index.md` front matter (this wins over the site setting):
+
+```toml
+sections = ["notes", "essays"]
+```
+
+Set `excludeArchives = true` in a page's front matter to omit it from the archive; the `archiveExclude = true` spelling also works.
+
 About page avatar (optional): add this to `content/about/index.md` front matter:
 
 ```toml

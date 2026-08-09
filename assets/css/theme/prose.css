@@ -4,6 +4,10 @@
   font-size: 0.98rem;
 }
 
+.post-content > :last-child {
+  margin-bottom: 0;
+}
+
 .post-content h2 {
   margin: 2.2rem 0 0.9rem;
   padding-top: 0.9rem;

@@ -84,6 +84,16 @@
   background: var(--border);
 }
 
+/* Pins the year while its own group is in view; the next year's heading pushes
+   it out. z-index keeps entries and their rail markers scrolling underneath. */
+.archive-year {
+  position: sticky;
+  top: var(--sticky-offset);
+  z-index: 1;
+  padding: 0.45rem 0 0.5rem;
+  background: var(--bg);
+}
+
 .timeline-item {
   position: relative;
 }

@@ -1,4 +1,25 @@
 {{ define "main" }}
+  {{ $sections := .Params.sections }}
+  {{ if not $sections }}
+    {{ with .Site.Params.archives }}
+      {{ $sections = .sections }}
+    {{ end }}
+  {{ end }}
+
+  {{ $pages := slice }}
+  {{ if $sections }}
+    {{ $pages = where .Site.RegularPages "Section" "in" $sections }}
+  {{ else }}
+    {{ $pages = where .Site.RegularPages "Section" "posts" }}
+    {{ if not $pages }}
+      {{ $pages = where .Site.RegularPages "Section" "ne" "search" }}
+    {{ end }}
+  {{ end }}
+  {{ $pages = where $pages "Params.excludeArchives" "ne" true }}
+  {{ $pages = where $pages "Params.archiveExclude" "ne" true }}
+  {{ $pages = $pages.ByDate.Reverse }}
+  {{ $years := $pages.GroupByDate "2006" }}
+
   <section class="border border-[var(--border)] bg-[var(--bg-alt)] p-5 shadow-[0_14px_24px_-18px_rgba(0,0,0,0.35)] sm:p-6">
     <div class="flex flex-col gap-3">
       <p class="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Archives</p>
@@ -6,20 +27,28 @@
       {{ with .Content }}
         <div class="prose-inline-links text-sm leading-relaxed text-[var(--muted)]">{{ . }}</div>
       {{ end }}
+      {{ if gt (len $years) 1 }}
+        <nav aria-label="Jump to year" class="flex flex-wrap gap-2">
+          {{ range $years }}
+            <a
+              class="index-hover border border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[0.72rem] tracking-[0.04em] text-[var(--muted)] hover:text-[var(--fg)]"
+              href="#year-{{ .Key }}"
+            >
+              {{ .Key }}<sup class="ml-1 text-[0.6rem]">{{ len .Pages }}</sup>
+            </a>
+          {{ end }}
+        </nav>
+      {{ end }}
     </div>
   </section>
 
-  {{ $pages := where .Site.RegularPages "Section" "posts" }}
-  {{ if not $pages }}
-    {{ $pages = .Site.RegularPages }}
-  {{ end }}
-  {{ $pages = $pages.ByDate.Reverse }}
-
   {{ if gt (len $pages) 0 }}
     <section class="timeline">
-      {{ range $pages.GroupByDate "2006" }}
+      {{ range $years }}
         <div class="flex flex-col gap-3">
-          <h2 class="text-lg leading-none text-[var(--fg)]">{{ .Key }}</h2>
+          <h2 id="year-{{ .Key }}" class="archive-year text-lg leading-none text-[var(--fg)]">
+            {{ .Key }}<sup class="ml-1 text-[0.6rem] text-[var(--muted)]">{{ len .Pages }}</sup>
+          </h2>
           <div class="flex flex-col gap-1.5">
             {{ range .Pages }}
               <article class="timeline-item py-2">
@@ -48,5 +77,7 @@
         </div>
       {{ end }}
     </section>
+  {{ else }}
+    <p class="text-sm text-[var(--muted)]">Nothing archived yet.</p>
   {{ end }}
 {{ end }}
