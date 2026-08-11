@@ -57,6 +57,56 @@
   <meta name="twitter:description" content="{{ . }}" />
 {{ end }}
 
+<link rel="canonical" href="{{ .Params.canonical | default .Permalink }}" />
+<meta property="og:site_name" content="{{ site.Title }}" />
+
+{{ $isPost := and .IsPage (eq .Section "posts") }}
+{{ if .IsPage }}
+  {{ if not .Date.IsZero }}
+    <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" />
+  {{ end }}
+  {{ if not .Lastmod.IsZero }}
+    <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}" />
+  {{ end }}
+{{ end }}
+
+{{/* Structured data. Built as a map and passed through jsonify so values are escaped
+     correctly rather than hand-assembled into JSON. */}}
+{{ $ldAuthor := dict "@type" "Person" "name" (site.Params.author | default site.Title) }}
+{{ $ld := dict }}
+{{ if .IsPage }}
+  {{ $ld = dict
+    "@context" "https://schema.org"
+    "@type" (cond $isPost "BlogPosting" "WebPage")
+    "headline" .Title
+    "url" .Permalink
+    "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+    "author" $ldAuthor
+    "publisher" $ldAuthor
+  }}
+  {{ with $metaDescription }}{{ $ld = merge $ld (dict "description" .) }}{{ end }}
+  {{ with $metaImageURL }}{{ $ld = merge $ld (dict "image" .) }}{{ end }}
+  {{ if not .Date.IsZero }}
+    {{ $ld = merge $ld (dict "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")) }}
+  {{ end }}
+  {{ if not .Lastmod.IsZero }}
+    {{ $ld = merge $ld (dict "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")) }}
+  {{ end }}
+  {{ with .Params.tags }}{{ $ld = merge $ld (dict "keywords" .) }}{{ end }}
+{{ else if .IsHome }}
+  {{ $ld = dict
+    "@context" "https://schema.org"
+    "@type" "WebSite"
+    "name" site.Title
+    "url" site.BaseURL
+    "author" $ldAuthor
+  }}
+  {{ with $metaDescription }}{{ $ld = merge $ld (dict "description" .) }}{{ end }}
+{{ end }}
+{{ with $ld }}
+  <script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
+{{ end }}
+
 {{ with .Site.Params.favicon }}
   <link rel="icon" href="{{ . | relURL }}" />
 {{ end }}
