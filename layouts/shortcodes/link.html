@@ -2,6 +2,12 @@
 {{- $description := .Get "description" | default "" -}}
 {{- $url := .Get "url" | default "#" -}}
 {{- $icon := .Get "icon" | default "" -}}
+{{- $border := in (slice "true" "1" "yes" "on") (lower (printf "%v" (.Get "border" | default "false"))) -}}
+{{- $sizeValue := strings.TrimSpace (printf "%v" (.Get "size" | default "")) -}}
+{{- $sizeAttr := "" -}}
+{{- if gt (len (findRE "^[0-9]*\\.?[0-9]+(rem|em|px)$" (lower $sizeValue))) 0 -}}
+  {{- $sizeAttr = printf "style=%q" (printf "--sc-link-icon-size: %s" (lower $sizeValue)) -}}
+{{- end -}}
 {{- $linkAttrs := partial "link-attrs.html" (dict "url" $url "target" (.Get "target" | default "") "rel" (.Get "rel" | default "")) -}}
 {{- $target := $linkAttrs.target -}}
 {{- $rel := $linkAttrs.rel -}}
@@ -22,13 +28,13 @@
   target="{{ $target }}"
   {{- with $rel }} rel="{{ . }}"{{ end -}}
 >
-  <span class="sc-link-card__media{{ if $iconImageSrc }} sc-link-card__media--image{{ end }}" aria-hidden="true">
+  <span class="sc-link-card__media{{ if $border }} sc-link-card__media--boxed{{ end }}" aria-hidden="true" {{- with $sizeAttr }} {{ . | safeHTMLAttr }}{{ end }}>
     {{- if $iconImageSrc -}}
       <img src="{{ $iconImageSrc }}" alt="" loading="lazy" {{ with $iconFallbackAttr }}{{ . | safeHTMLAttr }}{{ end }} />
     {{- else if $iconName -}}
-      {{ partial "shortcode-icon.html" (dict "name" $iconName "class" "sc-link-card__icon" "size" "1.15rem") }}
+      {{ partial "shortcode-icon.html" (dict "name" $iconName "class" "sc-link-card__icon") }}
     {{- else -}}
-      {{ partial "shortcode-icon.html" (dict "name" "link" "class" "sc-link-card__icon" "size" "1.15rem") }}
+      {{ partial "shortcode-icon.html" (dict "name" "link" "class" "sc-link-card__icon") }}
     {{- end -}}
   </span>
   <span class="sc-link-card__body">
