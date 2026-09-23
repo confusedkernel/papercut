@@ -46,7 +46,7 @@
       {{- end }}
       <dc:creator>{{ $author }}</dc:creator>
       <guid isPermaLink="true">{{ .Permalink }}</guid>
-      {{- with .Description }}
+      {{- with .Description | markdownify | plainify | htmlUnescape }}
       <description>{{ . }}</description>
       {{- else }}
       <description>{{ .Summary | plainify | truncate 300 }}</description>

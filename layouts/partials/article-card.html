@@ -30,7 +30,7 @@
       </div>
     {{ end }}
     {{ with .Params.description }}
-      <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</p>
+      <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . | markdownify }}</p>
     {{ else }}
       <p class="text-sm leading-relaxed text-[var(--muted)]">{{ .Summary }}</p>
     {{ end }}

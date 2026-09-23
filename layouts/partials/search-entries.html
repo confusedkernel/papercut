@@ -5,7 +5,7 @@
 {{- $searchable = where $searchable "Params.searchExclude" "ne" true -}}
 {{- $entries := slice -}}
 {{- range $searchable.ByDate.Reverse -}}
-  {{- $summary := or .Params.description (.Summary | plainify) | htmlUnescape -}}
+  {{- $summary := or (.Params.description | markdownify | plainify) (.Summary | plainify) | htmlUnescape -}}
   {{- $indexedText := "" -}}
   {{- if eq $indexBy "content" -}}
     {{- $indexedText = .Plain | htmlUnescape -}}

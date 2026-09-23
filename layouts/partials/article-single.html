@@ -37,7 +37,7 @@
       </figure>
     {{ end }}
     {{ with $page.Params.description }}
-      <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . }}</p>
+      <p class="text-sm leading-relaxed text-[var(--muted)]">{{ . | markdownify }}</p>
     {{ end }}
     {{ with $page.Params.tags }}
       <ul class="flex flex-wrap gap-2 text-[0.7rem] uppercase tracking-[0.08em] text-[var(--muted)]">

@@ -9,7 +9,7 @@
   {{ end }}
 </title>
 
-{{ $metaDescription := .Params.description | default .Site.Params.description }}
+{{ $metaDescription := .Params.description | default .Site.Params.description | markdownify | plainify | htmlUnescape }}
 {{ with $metaDescription }}
   <meta name="description" content="{{ . }}" />
 {{ end }}
