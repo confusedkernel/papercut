@@ -56,13 +56,19 @@ hugo new posts/hello-world.md
 
 ## Optional params
 
-- `params.tagline`: short line under the site title on the home page
+- `params.tagline`: short line above the site title on the home page (overridden by `eyebrow` in `content/_index.md`)
+- `params.logo`: path to a logo in `assets/` shown in the navbar instead of the site title; SVGs are inlined so `currentColor` follows the theme
 - `params.author`: used in the footer
 - `params.avatar`: path to a square avatar image
 - `params.fallbackImage`: site-wide fallback image for social previews and project covers (default `/images/papercut-fallback.svg`; `fallback_image` also works)
 - `params.announcement`: optional announcement block on the home page
 - `params.social`: list of social links (name, url)
 - `params.copyright`: custom footer copyright text
+
+## Front matter
+
+- Home page (`content/_index.md`): `title`, `eyebrow`, and `description` set the home hero, falling back to the site title, `params.tagline`, and `params.description`
+- Single pages: `metadata = "false"` hides the date line, `metadata = "custom"` replaces it with `custom_metadata`
 - `params.showLastUpdated`: show/hide the `Updated <date>` label on single post pages (default `false`; `show_last_updated` also works)
 
 ## Search

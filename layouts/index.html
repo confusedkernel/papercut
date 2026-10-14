@@ -6,17 +6,17 @@
           <img
             class="h-20 w-20 border border-[var(--border)] object-cover"
             src="{{ . | relURL }}"
-            alt="{{ $.Site.Title }}"
+            alt="{{ $.Site.Params.author | default $.Site.Title }}"
           />
         </div>
       {{ end }}
 
       <div class="flex flex-col gap-3">
         <p class="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
-          {{ .Site.Params.tagline | default "Blog" }}
+          {{ .Params.eyebrow | default .Site.Params.tagline | default "Blog" }}
         </p>
-        <h1 class="text-3xl sm:text-4xl">{{ .Site.Title }}</h1>
-        {{ with .Site.Params.description }}
+        <h1 class="text-3xl sm:text-4xl">{{ .Title | default .Site.Title }}</h1>
+        {{ with .Description | default .Site.Params.description }}
           <p class="max-w-[58ch] text-sm leading-relaxed text-[var(--muted)]">{{ . | markdownify }}</p>
         {{ end }}
         {{ with .Site.Params.social }}

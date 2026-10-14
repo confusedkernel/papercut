@@ -10,9 +10,16 @@
   {{ $showLastUpdated = site.Params.show_last_updated }}
 {{ end }}
 {{ $showLastmod := and $showLastUpdated $isPost (not $page.Lastmod.IsZero) (ne ($page.Lastmod.Format "2006-01-02") ($page.Date.Format "2006-01-02")) }}
+{{ $metadata := "true" }}
+{{ if isset $page.Params "metadata" }}
+  {{ $metadata = lower (printf "%v" $page.Params.metadata) }}
+{{ end }}
 <article class="post-shell border border-[var(--border)] bg-[var(--bg-alt)] p-6">
   <header class="flex flex-col gap-3{{ if $aboutAvatar }} has-about-avatar{{ end }}">
-    {{ if $page.Date.IsZero }}
+    {{ if eq $metadata "false" }}
+    {{ else if eq $metadata "custom" }}
+      <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">{{ $page.Params.custom_metadata }}</p>
+    {{ else if $page.Date.IsZero }}
       <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">{{ $page.Section | title }}</p>
     {{ else }}
       <p class="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--muted)]">
