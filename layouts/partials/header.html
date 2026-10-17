@@ -116,4 +116,7 @@
       </details>
     </div>
   </div>
+  {{ if partial "reading-progress-enabled.html" . }}
+    <div class="reading-progress" data-reading-progress aria-hidden="true"></div>
+  {{ end }}
 </header>

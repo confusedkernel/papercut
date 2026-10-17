@@ -1,0 +1,21 @@
+{{- /* Returns whether the reading progress bar should render for this page.
+  Site-wide: params.readingProgress (default true, applies to posts).
+  Per page: readingProgress in front matter overrides the site setting on any single page. */ -}}
+{{- $enabled := false -}}
+{{- if .IsPage -}}
+  {{- $siteEnabled := true -}}
+  {{- if isset site.Params "readingprogress" -}}
+    {{- $siteEnabled = site.Params.readingprogress -}}
+  {{- end -}}
+  {{- if isset site.Params "reading_progress" -}}
+    {{- $siteEnabled = site.Params.reading_progress -}}
+  {{- end -}}
+  {{- $enabled = and $siteEnabled (eq .Section "posts") -}}
+  {{- if isset .Params "readingprogress" -}}
+    {{- $enabled = .Params.readingprogress -}}
+  {{- end -}}
+  {{- if isset .Params "reading_progress" -}}
+    {{- $enabled = .Params.reading_progress -}}
+  {{- end -}}
+{{- end -}}
+{{- return $enabled -}}

@@ -64,12 +64,14 @@ hugo new posts/hello-world.md
 - `params.announcement`: optional announcement block on the home page
 - `params.social`: list of social links (name, url)
 - `params.copyright`: custom footer copyright text
+- `params.readingProgress`: show a reading progress bar along the bottom of the sticky header on post pages (default `true`; `reading_progress` also works)
 
 ## Front matter
 
 - Home page (`content/_index.md`): `title`, `eyebrow`, and `description` set the home hero, falling back to the site title, `params.tagline`, and `params.description`
 - Single pages: `metadata = "false"` hides the date line, `metadata = "custom"` replaces it with `custom_metadata`
 - `params.showLastUpdated`: show/hide the `Updated <date>` label on single post pages (default `false`; `show_last_updated` also works)
+- Single pages: `readingProgress = false` hides the reading progress bar on that page, `readingProgress = true` shows it even on non-post pages or when `params.readingProgress` is `false` (`reading_progress` also works)
 
 ## Search
 
