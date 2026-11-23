@@ -1,4 +1,4 @@
-{{- $icons := site.Data.icons | default dict -}}
+{{- $icons := hugo.Data.icons | default dict -}}
 {{- $name := lower (default "" .name) -}}
 {{- $aliases := dict "circle-info" "info" "alert" "warning" "triangle-alert" "warning" "check-circle" "check" "file" "document" -}}
 {{- if and (eq (index $icons $name) nil) (ne (index $aliases $name) nil) -}}
