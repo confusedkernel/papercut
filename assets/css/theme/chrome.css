@@ -544,7 +544,111 @@
   }
 }
 
+/* Breakpoint transition (classes set by static/js/header-collapse.js):
+   nav items fold right into the burger at <=860px, and unfold back out above it. */
+@media (max-width: 860px) {
+  .site-header.is-nav-collapsing .header-nav-desktop {
+    display: block;
+  }
+
+  .site-header.is-nav-collapsing .header-nav-desktop li {
+    animation: nav-fold-out 260ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  .site-header.is-nav-collapsing .mobile-nav__line {
+    transform-origin: right center;
+    animation: nav-burger-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1) 160ms both;
+  }
+
+  .site-header.is-nav-collapsing .mobile-nav__line--bottom {
+    animation-delay: 220ms;
+  }
+}
+
+@media (min-width: 861px) {
+  .site-header.is-nav-expanding .header-nav-desktop li {
+    animation: nav-unfold-in 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .site-header.is-nav-expanding .header-search-desktop {
+    animation: nav-search-in 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+}
+
+/* Stagger from the right (nearest the burger) outward. */
+.site-header.is-nav-collapsing .header-nav-desktop li:nth-last-child(2),
+.site-header.is-nav-expanding .header-nav-desktop li:nth-last-child(2) {
+  animation-delay: 40ms;
+}
+
+.site-header.is-nav-collapsing .header-nav-desktop li:nth-last-child(3),
+.site-header.is-nav-expanding .header-nav-desktop li:nth-last-child(3) {
+  animation-delay: 80ms;
+}
+
+.site-header.is-nav-collapsing .header-nav-desktop li:nth-last-child(4),
+.site-header.is-nav-expanding .header-nav-desktop li:nth-last-child(4) {
+  animation-delay: 120ms;
+}
+
+.site-header.is-nav-collapsing .header-nav-desktop li:nth-last-child(n + 5),
+.site-header.is-nav-expanding .header-nav-desktop li:nth-last-child(n + 5) {
+  animation-delay: 160ms;
+}
+
+@keyframes nav-fold-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(1.25rem);
+  }
+}
+
+@keyframes nav-unfold-in {
+  from {
+    opacity: 0;
+    transform: translateX(1.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes nav-burger-in {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes nav-search-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .site-header .header-nav-desktop li,
+  .site-header .header-search-desktop,
+  .site-header .mobile-nav__line {
+    animation: none !important;
+  }
+
   .theme-cycle {
     transition: none;
     animation: none;
