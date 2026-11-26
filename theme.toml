@@ -2,7 +2,7 @@ name = "papercut"
 license = "MIT"
 licenselink = "https://opensource.org/licenses/MIT"
 description = "Paper-like Hugo theme with mono typography and interactive cards"
-min_version = "0.118.0"
+min_version = "0.158.0"
 
 [author]
   name = "confusedkernel"

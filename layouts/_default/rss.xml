@@ -18,7 +18,7 @@
     <link>{{ .Permalink }}</link>
     <description>{{ with site.Params.description }}{{ . }}{{ else }}Recent content{{ with .Title }} in {{ . }}{{ end }} on {{ site.Title }}{{ end }}</description>
     <generator>Hugo</generator>
-    {{- with site.Language.LanguageCode }}
+    {{- with site.Language.Locale }}
     <language>{{ . }}</language>
     {{- end }}
     {{- with site.Params.copyright }}
