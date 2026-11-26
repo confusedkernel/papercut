@@ -66,6 +66,13 @@ hugo new posts/hello-world.md
 - `params.copyright`: custom footer copyright text
 - `params.readingProgress`: show a reading progress bar along the bottom of the sticky header on post pages (default `true`; `reading_progress` also works)
 
+## Customization hooks
+
+Customize the theme from your site without editing it:
+
+- `assets/css/custom.css`: appended to the end of the theme stylesheet bundle (same fingerprinted file), so its rules can override theme styles. Theme tokens such as `var(--fg)` and `var(--header-title)` are available.
+- `layouts/partials/custom/head.html`: rendered at the end of `<head>` on every page, with the page as context. Use it for extra `<link>`, `<meta>`, or `<script>` tags.
+
 ## Front matter
 
 - Home page (`content/_index.md`): `title`, `eyebrow`, and `description` set the home hero, falling back to the site title, `params.tagline`, and `params.description`

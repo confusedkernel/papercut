@@ -143,7 +143,7 @@
     {{ $flexsearchSrc = printf "%s/%s" $flexsearchBase . }}
   {{ end }}
 {{ end }}
-{{ $themeCSS := slice
+{{ $themeCSSFiles := slice
   (resources.Get "css/theme/base.css")
   (resources.Get "css/theme/media.css")
   (resources.Get "css/theme/prose.css")
@@ -152,9 +152,12 @@
   (resources.Get "css/theme/shortcodes-panels.css")
   (resources.Get "css/theme/shortcodes-steps.css")
   (resources.Get "css/theme/toc-timeline.css")
-  | resources.Concat "css/theme.css"
-  | fingerprint
 }}
+{{/* Hook: a site-level assets/css/custom.css is appended last so it can override theme rules. */}}
+{{ with resources.Get "css/custom.css" }}
+  {{ $themeCSSFiles = $themeCSSFiles | append . }}
+{{ end }}
+{{ $themeCSS := $themeCSSFiles | resources.Concat "css/theme.css" | fingerprint }}
 
 <link rel="preload" href="{{ "fonts/SpaceMono-Regular.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="{{ "fonts/SpaceMono-Bold.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
@@ -203,3 +206,8 @@
 />
 <link rel="stylesheet" href="{{ if $tailwindCSS }}{{ $tailwindCSS.RelPermalink }}{{ else }}{{ "css/tailwind.css" | relURL }}{{ end }}" />
 <link rel="stylesheet" href="{{ $themeCSS.RelPermalink }}" />
+
+{{/* Hook: a site-level layouts/partials/custom/head.html is rendered at the end of <head>. */}}
+{{ if templates.Exists "partials/custom/head.html" }}
+  {{ partial "custom/head.html" . }}
+{{ end }}
