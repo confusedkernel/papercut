@@ -124,7 +124,7 @@
     if (button) {
       button.addEventListener("click", function () {
         open();
-        input.focus();
+        input.focus({ preventScroll: true });
       });
     }
     input.addEventListener("focus", open);

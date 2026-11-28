@@ -141,8 +141,11 @@ body {
   padding: 0;
 }
 
-html {
-  scroll-padding-top: var(--anchor-offset);
+/* Offset anchor targets below the sticky header. Kept off html's
+   scroll-padding-top: that also applies to focus/caret scrolling, so
+   focusing or typing in the header search input would scroll the page up. */
+main [id] {
+  scroll-margin-top: var(--anchor-offset);
 }
 
 body {
